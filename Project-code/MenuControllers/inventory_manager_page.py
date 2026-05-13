@@ -16,6 +16,8 @@ class InventoryManagerPortalFrame(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+        print(type(controller))
+        print(type(parent))
         self.configure(fg_color=BG_COLOR)
 
 
