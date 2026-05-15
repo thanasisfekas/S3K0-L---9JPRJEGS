@@ -1,0 +1,6 @@
+folder_id,patient_id,blood_type,allergies,chronic_conditions,current_medications,diagnosis,notes,last_updated,locked_by
+PMF001,P001,A+,Penicillin,Cancer sto tetragono,Amlodipine,Oncology follow-up,Patient reports fatigue after treatment. Monitor blood pressure.,2026-05-15,
+PMF002,P003,O-,None,Asthma,Salbutamol,Emergency assessment,Symptoms stabilized after observation. Recommend pulmonary follow-up.,2023-08-16,
+PMF003,P005,B+,Ibuprofen,Lower back pain,Paracetamol,Physiotherapy plan,Patient completed initial therapy cycle with moderate improvement.,2023-01-20,
+PMF004,P010,AB+,None,Type 1 diabetes,Insulin,Pediatric emergency monitoring,Glucose levels require close monitoring during admission.,2023-09-28,
+PMF005,P029,A-,Latex,None,None,Follow-up consultation,Review lab results and evaluate next treatment step.,2023-11-16,

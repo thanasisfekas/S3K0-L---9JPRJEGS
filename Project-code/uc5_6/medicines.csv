@@ -1,0 +1,12 @@
+medicine_id,name,active_substance,category,form,strength,allowed_specialties,allergy_substances,contraindications
+M001,Amoxicillin,Amoxicillin,Antibiotic,Capsule,500mg,Pediatrics;Dermatology,penicillin,penicillin
+M002,Salbutamol,Salbutamol,Bronchodilator,Inhaler,100mcg,All,,tachycardia
+M003,Insulin Glargine,Insulin,Diabetes,Injection,100 units/ml,Pediatrics;Dermatology,,
+M004,Ibuprofen,Ibuprofen,Analgesic,Tablet,400mg,All,ibuprofen,asthma
+M005,Ondansetron,Ondansetron,Antiemetic,Tablet,4mg,Oncology;Pediatrics,,
+M006,Doxorubicin,Doxorubicin,Chemotherapy,Injection,50mg,Oncology,,heart failure
+M007,Hydrocortisone Cream,Hydrocortisone,Dermatology,Cream,1%,Dermatology,,
+M008,Cetirizine,Cetirizine,Antihistamine,Tablet,10mg,All,,
+M009,Paracetamol,Acetaminophen,Analgesic,Tablet,500mg,All,,
+M010,Fluconazole,Fluconazole,Antifungal,Capsule,150mg,Dermatology;Pediatrics,,
+M011,Azithromycin,Azithromycin,Antibiotic,Tablet,250mg,Pediatrics;Dermatology,,
