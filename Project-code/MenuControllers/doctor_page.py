@@ -1,7 +1,14 @@
 from __future__ import annotations
 
+import sys
+from pathlib import Path
+
 import customtkinter as ctk
 from tkinter import messagebox
+
+USE_CASES_DIR = Path(__file__).resolve().parents[1] / "Seperate-Use_Cases-code"
+if str(USE_CASES_DIR) not in sys.path:
+    sys.path.append(str(USE_CASES_DIR))
 
 from MenuControllers.centralMenu import CentralMenu
 from uc5_6.patient_record_pages import (
