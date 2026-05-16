@@ -1,0 +1,53 @@
+prescription_id,patient_id,doctor_id,medicine_id,date,dosage,status
+PR001,P001,D005,M002,2023-12-22,1 tablet daily,Completed
+PR002,P018,D001,M004,2023-06-28,1 capsule every 8 hours,Active
+PR003,P036,D004,M001,2023-07-10,5ml twice daily,Active
+PR004,P045,D010,M004,2023-04-03,5ml twice daily,Cancelled
+PR005,P002,D009,M002,2023-01-21,As needed,Completed
+PR006,P039,D009,M001,2023-12-08,5ml twice daily,Active
+PR007,P002,D006,M004,2023-02-07,2 tablets daily,Active
+PR008,P050,D001,M004,2023-08-25,5ml twice daily,Cancelled
+PR009,P007,D007,M004,2023-05-29,1 tablet daily,Completed
+PR010,P028,D004,M004,2023-05-07,As needed,Completed
+PR011,P013,D010,M003,2023-03-30,5ml twice daily,Completed
+PR012,P049,D005,M005,2023-08-28,5ml twice daily,Completed
+PR013,P044,D009,M001,2023-10-18,1 capsule every 8 hours,Completed
+PR014,P033,D001,M005,2023-11-12,As needed,Completed
+PR015,P024,D002,M004,2023-03-08,1 capsule every 8 hours,Cancelled
+PR016,P031,D008,M004,2023-11-07,1 capsule every 8 hours,Cancelled
+PR017,P032,D009,M001,2023-10-05,5ml twice daily,Completed
+PR018,P045,D002,M003,2023-04-07,5ml twice daily,Cancelled
+PR019,P044,D008,M001,2023-08-20,5ml twice daily,Completed
+PR020,P006,D008,M004,2023-08-05,5ml twice daily,Completed
+PR021,P045,D001,M003,2023-06-14,2 tablets daily,Cancelled
+PR022,P036,D001,M001,2023-07-14,As needed,Cancelled
+PR023,P043,D010,M005,2023-06-01,1 tablet daily,Cancelled
+PR024,P015,D010,M001,2023-08-25,5ml twice daily,Completed
+PR025,P030,D005,M001,2023-06-07,1 tablet daily,Active
+PR026,P049,D010,M004,2023-09-03,1 tablet daily,Completed
+PR027,P022,D008,M003,2023-01-03,2 tablets daily,Completed
+PR028,P018,D007,M004,2023-08-22,As needed,Cancelled
+PR029,P009,D003,M004,2023-11-28,2 tablets daily,Cancelled
+PR030,P035,D008,M002,2023-03-07,1 capsule every 8 hours,Completed
+PR031,P002,D008,M001,2023-08-31,5ml twice daily,Completed
+PR032,P025,D004,M005,2023-08-30,2 tablets daily,Active
+PR033,P004,D006,M001,2023-07-27,As needed,Completed
+PR034,P024,D007,M003,2023-06-10,1 tablet daily,Cancelled
+PR035,P014,D003,M001,2023-04-21,As needed,Active
+PR036,P021,D001,M004,2023-05-17,1 tablet daily,Completed
+PR037,P016,D002,M004,2023-05-14,As needed,Completed
+PR038,P026,D010,M005,2023-12-01,As needed,Active
+PR039,P004,D004,M002,2023-06-15,1 capsule every 8 hours,Completed
+PR040,P049,D004,M004,2023-03-25,5ml twice daily,Completed
+PR041,P016,D006,M002,2023-03-28,2 tablets daily,Completed
+PR042,P022,D004,M002,2023-09-27,1 capsule every 8 hours,Active
+PR043,P021,D002,M002,2023-09-12,As needed,Cancelled
+PR044,P045,D004,M003,2023-04-23,5ml twice daily,Active
+PR045,P040,D005,M001,2023-11-17,As needed,Cancelled
+PR046,P009,D002,M005,2023-03-07,5ml twice daily,Completed
+PR047,P045,D003,M002,2023-11-03,1 capsule every 8 hours,Completed
+PR048,P049,D008,M001,2023-10-19,1 tablet daily,Cancelled
+PR049,P008,D001,M005,2023-08-14,As needed,Completed
+PR050,P022,D009,M001,2023-04-23,2 tablets daily,Completed
+PR031,P002,D008,M002,2023-08-31,10ml twice daily,Completed
+PR007,P002,D006,M002,2023-02-07,10ml twice daily,Active
