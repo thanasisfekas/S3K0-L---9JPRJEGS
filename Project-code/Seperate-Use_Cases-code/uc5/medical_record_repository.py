@@ -9,7 +9,7 @@ import pandas as pd
 class PatientRecordRepository:
     def __init__(self):
         self.shared_data_dir = Path("./Data")
-        self.uc_data_dir = Path("./Seperate-Use_Cases-code") / "uc5_6"
+        self.uc_data_dir = Path("./Seperate-Use_Cases-code") / "uc5"
         self.patients_file = self.shared_data_dir / "patients.csv"
         self.hospitalizations_file = self.uc_data_dir / "hospitalizations.csv"
         self.folders_file = self.uc_data_dir / "patient_medical_folders.csv"
