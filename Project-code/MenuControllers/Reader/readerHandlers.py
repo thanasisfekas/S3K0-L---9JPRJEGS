@@ -31,50 +31,6 @@ class DocReader(File_reader):
     
     def getDoctorPassword(self) ->pd.Series:
         return self.data.iloc[:,8]
-    
-    def getDoctorsBySpecialty(self, specialty):
-        filtered = self.data[self.getDoctorSpecialization() == specialty].copy()
-        return filtered.sort_values(by=["last_name", "first_name"])
-    
-    def getDoctorFullName(self, doctor_id):
-        row = self.data[self.data["doctor_id"] == doctor_id].iloc[0]
-        return f"Dr. {row['first_name']} {row['last_name']}"
-    
-class DoctorSpecialtyReader(File_reader):
-    def __init__(self, file: str) -> None:
-        super().__init__(file)
-
-    def getSpecialtyId(self) -> pd.Series:
-        return self.data.iloc[:, 0]
-
-    def getSpecialtyName(self) -> pd.Series:
-        return self.data.iloc[:, 1]
-
-class DoctorAppointmentTimeSlotsReader(File_reader):
-    def __init__(self, file: str) -> None:
-        super().__init__(file)
-
-    def getDoctorId(self) -> pd.Series:
-        return self.data.iloc[:, 0]
-
-    def getAvailableDate(self) -> pd.Series:
-        return self.data.iloc[:, 1]
-
-    def getAvailableTime(self) -> pd.Series:
-        return self.data.iloc[:, 2]
-    
-    def getAvailableSlots(self, doctor_id, date):
-        slots = self.data[(self.data["doctor_id"] == doctor_id) & (self.data["available_date"] == date)]["available_time"]
-        return (pd.to_datetime(slots, format="%H:%M:%S").sort_values().dt.strftime("%H:%M:%S").tolist())
-    
-    def removeSlot(self, doctor_id, date, time):
-        self.data = self.data[~((self.data["doctor_id"] == doctor_id) & (self.data["available_date"] == date) & (self.data["available_time"] == time))]
-        self.data.to_csv(self.file, index=False)
-
-    def restoreSlot(self, doctor_id, date, time):
-        new_row = {"doctor_id": doctor_id, "available_date": date, "available_time": time}
-        self.data.loc[len(self.data)] = new_row
-        self.data.to_csv(self.file, index=False)
 
 class AppointmentReader(File_reader):
     def __init__(self, file : str)->None:
@@ -101,24 +57,6 @@ class AppointmentReader(File_reader):
     def getAppointmentStatus(self)->pd.Series:
         return self.data.iloc[:,6]
     
-    def createAppointment(self, patient_id, doctor_id, date, time):
-        last_num = self.getAppointmentId() \
-            .str.replace("A", "") \
-            .astype(int) \
-            .max()
-        new_id = f"A{last_num+1:03}"
-        new_row = {
-            "appointment_id": new_id,
-            "patient_id": patient_id,
-            "doctor_id": doctor_id,
-            "appointment_date": date,
-            "appointment_time": time,
-            "reason_for_visit": "General Consultation",
-            "status": "Booked"
-        }
-        self.data.loc[len(self.data)] = new_row
-        self.data.to_csv(self.file, index=False)
-    
 
 class BillingReader(File_reader):
     def __init__(self, file : str)->None:
@@ -144,16 +82,6 @@ class BillingReader(File_reader):
     
     def getBillPaymentStatus(self)->pd.Series:
         return self.data.iloc[:,6]
-    
-    def getBillsByPatient(self, patient_id):
-        bills = self.data[self.getPatientId() == patient_id].copy()
-        pending = bills[bills["payment_status"] == "Pending"]
-        paid = bills[bills["payment_status"] == "Paid"]
-        return pd.concat([pending, paid])
-    
-    def markBillPaid(self, bill_id):
-        self.data.loc[self.getBillId() == bill_id, "payment_status"] = "Paid"
-        self.data.to_csv(self.file, index=False)
     
     
 class HrManagerReader(File_reader):
@@ -302,10 +230,6 @@ class TreatmentReader(File_reader):
     def getTreatmentDate(self)->pd.Series:
         return self.data.iloc[:,5]
     
-    def getTreatmentDescriptionById(self, treatment_id):
-        row = self.data[self.getTreatmentId() == treatment_id].iloc[0]
-        return f"{row['treatment_type']}: {row['description']}"
-    
 class SecretaryReader(File_reader):
     def __init__(self, file:str):
         super().__init__(file)
@@ -362,5 +286,57 @@ class NurseReader(File_reader):
     
         def getNursePassword(self) ->pd.Series:
             return self.data.iloc[:,7]
+        
 
 
+class MedReader(File_reader):
+        def __init__(self, file:str):
+            super().__init__(file)
+
+        def getMedId(self) ->pd.Series:
+            return self.data.iloc[:,0]
+    
+        def getMedName(self) ->pd.Series:
+            return self.data.iloc[:,1]
+    
+        def getMedCategory(self) ->pd.Series:
+            return self.data.iloc[:,2]
+    
+        def getMedStock(self) ->pd.Series:
+            return self.data.iloc[:,3]
+    
+        def getMedExpires(self) ->pd.Series:
+            return self.data.iloc[:,4]
+    
+        def getMedPrice(self) ->pd.Series:
+            return self.data.iloc[:,5]
+
+class EquipReader(File_reader):
+        def __init__(self, file:str):
+            super().__init__(file)
+
+        def getEquipId(self) ->pd.Series:
+            return self.data.iloc[:,0]
+    
+        def getEquipName(self) ->pd.Series:
+            return self.data.iloc[:,1]
+    
+        def getEquipType(self) ->pd.Series:
+            return self.data.iloc[:,2]
+    
+        def getEquipStock(self) ->pd.Series:
+            return self.data.iloc[:,3]
+        
+
+class WardReader(File_reader):
+    def __init__(self, file:str):
+        super().__init__(file)
+
+        def getWardId(self) ->pd.Series:
+            return self.data.iloc[:,0]
+    
+        def getWardName(self) ->pd.Series:
+            return self.data.iloc[:,1]
+    
+        def getWardAvailability(self) ->pd.Series:
+            return self.data.iloc[:,2]

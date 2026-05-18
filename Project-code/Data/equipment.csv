@@ -1,0 +1,6 @@
+equipment_id,name,type,stock_level
+E001,Digital Sphygmomanometer,Diagnostic,15
+E002,Portable Oxygen Concentrator,Respiratory,8
+E003,Stethoscope Cardiology,Diagnostic,20
+E004,Infusion Pump,Delivery,12
+E005,Pulse Oximeter,Monitoring,50
