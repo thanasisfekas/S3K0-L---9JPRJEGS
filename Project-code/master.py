@@ -49,9 +49,9 @@ class HospitalMaster(tk.Tk):
         self.main_container.pack(fill="both", expand=True)
 
         self.current_frame = None
-        self.show_login(user_name='User')
-
         self.current_user_name = "User"
+        self.current_patient_id = None
+        self.show_login(user_name="User")
 
 
     # το grabage collertor του tkinter καθαριζει τις φωτογραφιες αν δεν κραταμε αναφορα σε αυτες,
@@ -79,30 +79,37 @@ class HospitalMaster(tk.Tk):
 
     def show_login(self, user_name):
         self.current_user_name = user_name
+        self.current_patient_id = None
         self._switch_frame(LoginFrame)
 
-    def show_patient_portal(self, user_name):
+    def show_patient_portal(self, user_name, patient_id=None):
         self.current_user_name = user_name
+        self.current_patient_id = patient_id
         self._switch_frame(PatientPortalFrame)
 
     def show_doctor_portal(self, user_name):
         self.current_user_name = user_name
+        self.current_patient_id = None
         self._switch_frame(DoctorPortalFrame)
 
     def show_pharmacist_portal(self, user_name):
         self.current_user_name = user_name
+        self.current_patient_id = None
         self._switch_frame(PharmacistPortalFrame)
 
     def show_inventory_manager_portal(self, user_name):
         self.current_user_name = user_name
+        self.current_patient_id = None
         self._switch_frame(InventoryManagerPortalFrame)
 
     def show_hr_portal(self, user_name):
         self.current_user_name = user_name
+        self.current_patient_id = None
         self._switch_frame(HRManagerPortalFrame)
 
     def show_secretary_portal(self, user_name):
         self.current_user_name = user_name
+        self.current_patient_id = None
         self._switch_frame(SecretaryPortalFrame)
 
     def _switch_frame(self, frame_class):

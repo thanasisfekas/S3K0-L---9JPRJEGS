@@ -120,9 +120,17 @@ class LoginFrame(ctk.CTkFrame):
 
 
     def authenticate(self, data_frame, usr_email, usr_password):
-        user_fname = data_frame.query(f'email == "{usr_email}" and password == "{usr_password}"')['first_name'].iloc[0]
-        user_lname = data_frame.query(f'email == "{usr_email}" and password == "{usr_password}"')['last_name'].iloc[0]
+        matched_user = self.get_authenticated_row(data_frame, usr_email, usr_password)
+        user_fname = matched_user["first_name"]
+        user_lname = matched_user["last_name"]
         return f"{user_fname} {user_lname}"
+
+    def get_authenticated_row(self, data_frame, usr_email, usr_password):
+        matches = data_frame[
+            (data_frame["email"].astype(str) == str(usr_email)) &
+            (data_frame["password"].astype(str) == str(usr_password))
+        ]
+        return matches.iloc[0]
 
     def handle_login(self):
         email = self.entry_user.get()
@@ -148,7 +156,8 @@ class LoginFrame(ctk.CTkFrame):
 
         if recognizer.is_patient(patients_creds, email, password) == 1 :
             user_name = self.authenticate(patients, email, password)
-            self.controller.show_patient_portal(user_name)
+            patient_id = self.get_authenticated_row(patients, email, password)["patient_id"]
+            self.controller.show_patient_portal(user_name, patient_id)
 
         elif recognizer.is_doctor(doctors_creds, email, password) == 1 :
             user_name = self.authenticate(doctors, email, password)

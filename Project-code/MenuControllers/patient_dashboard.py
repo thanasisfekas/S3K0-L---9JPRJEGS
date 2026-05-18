@@ -1,7 +1,17 @@
 from __future__ import annotations
+import sys
+import tkinter as tk
+from pathlib import Path
+
 import customtkinter as ctk
 from tkinter import messagebox
 from MenuControllers.centralMenu import CentralMenu
+
+USE_CASES_DIR = Path(__file__).resolve().parents[1] / "Seperate-Use_Cases-code"
+if str(USE_CASES_DIR) not in sys.path:
+    sys.path.append(str(USE_CASES_DIR))
+
+from UseCase1.appointment_search_controller import AppointmentSearchController
 
 
 ctk.set_appearance_mode("Light")
@@ -18,6 +28,7 @@ class PatientPortalFrame(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+        self.appointment_controller = None
         self.configure(fg_color=BG_COLOR)
 
         self.grid_columnconfigure(0, weight=1)
@@ -37,7 +48,9 @@ class PatientPortalFrame(ctk.CTkFrame):
         self.container.grid_rowconfigure(0, weight=1)
 
         self.sub_pages = {
-            "menu": PatientCentralMenu(self.container, self)}
+            "menu": PatientCentralMenu(self.container, self),
+            "appointment": tk.Frame(self.container, bg="#ffffff", highlightthickness=0),
+        }
         
         for sp in self.sub_pages.values():
             sp.grid(row=0, column=0, sticky="nsew")
@@ -56,6 +69,27 @@ class PatientPortalFrame(ctk.CTkFrame):
     def show_sub_page(self, name):
         if name in self.sub_pages:
             self.sub_pages[name].tkraise()
+
+    def start_appointment_flow(self):
+        patient_id = getattr(self.controller, "current_patient_id", None)
+        if not patient_id:
+            messagebox.showerror("Error", "Could not find the logged-in patient ID.")
+            return
+
+        self.show_sub_page("appointment")
+        appointment_page = self.sub_pages["appointment"]
+        self.appointment_controller = AppointmentSearchController(
+            patient_id=patient_id,
+            root=appointment_page,
+            back_command=self.return_to_menu,
+        )
+        self.appointment_controller.displaySearchAppointmentScreen()
+
+    def return_to_menu(self):
+        appointment_page = self.sub_pages["appointment"]
+        for widget in appointment_page.winfo_children():
+            widget.destroy()
+        self.show_sub_page("menu")
     
     def handle_logout(self):
         try:
@@ -68,7 +102,14 @@ class PatientPortalFrame(ctk.CTkFrame):
 
 class PatientCentralMenu(CentralMenu):
     def __init__(self, parent, portal):
-        super().__init__(parent, portal,user_t="PATIENT")
+        super().__init__(
+            parent,
+            portal,
+            user_t="PATIENT",
+            tile_commands={
+                "Schedule Appointment": portal.start_appointment_flow,
+            },
+        )
         
         ctk.CTkLabel(self, text="What would you like to do today?", font=ctk.CTkFont(size=16), text_color=TEXT_MUTE).pack(pady=(0, 40))
 

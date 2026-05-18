@@ -16,9 +16,10 @@ from .appointment_booking_controller import AppointmentBookingController
 
 
 class AppointmentSearchController:
-    def __init__(self, patient_id, root):
+    def __init__(self, patient_id, root, back_command=None):
         self.patient_id = patient_id
         self.root = root
+        self.back_command = back_command
 
         self.selected_date = None
         self.selected_specialty = None
@@ -30,7 +31,7 @@ class AppointmentSearchController:
 
     def displaySearchAppointmentScreen(self):
         self._clear_screen()
-        self.current_screen = SearchAppointmentScreen(self.root, on_submit=self.setDate, back_command=None)
+        self.current_screen = SearchAppointmentScreen(self.root, on_submit=self.setDate, back_command=self.back_command)
         return self.current_screen
 
     def setDate(self, date):
