@@ -1,0 +1,7 @@
+log_id,prescription_id,patient_id,doctor_id,doctor_name,medicine_id,medicine_name,dosage,frequency,duration,instructions,created_at,status
+PL001,PR001,P001,D007,Robert Davis,M005,Ondansetron,4mg,twice daily,3 days,Take after meals if nausea occurs.,2023-04-09,Issued
+PL002,PR002,P003,D002,Jane Davis,M002,Salbutamol,2 puffs,as needed,14 days,Use inhaler during shortness of breath episodes.,2023-08-16,Issued
+PL003,PR003,P010,D006,Alex Davis,M003,Insulin Glargine,10 units,once nightly,30 days,Monitor glucose before administration.,2023-09-28,Issued
+PL004,PR004,P001,D001,David Taylor,M010,Fluconazole,1kg,opote thes,jerw gw,lmao,2026-05-13,Issued
+PL005,PR005,P001,D001,David Taylor,M005,Ondansetron,4mg,twice daily,3 days,Take after meals if nausea occurs.,2026-05-15,Issued
+PL006,PR006,P001,D001,David Taylor,M005,Ondansetron,4mg,twice daily,1 day,Take after meals if nausea occurs.,2026-05-15,Issued

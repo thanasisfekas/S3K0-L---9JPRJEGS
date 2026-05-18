@@ -156,7 +156,7 @@ ui_json = {
 }
 
 class CentralMenu(ctk.CTkFrame):
-    def __init__(self,parent, portal, user_t):
+    def __init__(self,parent, portal, user_t, tile_commands=None):
         super().__init__(parent, fg_color="transparent")
         
         # print(ui_json[user_t])
@@ -170,8 +170,11 @@ class CentralMenu(ctk.CTkFrame):
         grid_frame = ctk.CTkFrame(self, fg_color="transparent")
         grid_frame.pack(expand=True)
         
+        tile_commands = tile_commands or {}
         for tile in ui_json[user_t].get("tiles"):
-            self.create_tile(grid_frame, tile["title"], lambda: messagebox.showinfo("Info", "Coming soon :)"), tile["row"], tile["column"])
+            title = tile["title"]
+            command = tile_commands.get(title, lambda: messagebox.showinfo("Info", "Coming soon :)"))
+            self.create_tile(grid_frame, title, command, tile["row"], tile["column"])
         
     def create_tile(self, master, text, command, row, col):
         tile = ctk.CTkButton(

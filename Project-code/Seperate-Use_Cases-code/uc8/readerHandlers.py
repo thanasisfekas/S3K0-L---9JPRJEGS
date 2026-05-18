@@ -1,4 +1,4 @@
-from .file_reader import File_reader
+from file_reader import File_reader
 import pandas as pd
 
 class DocReader(File_reader):
@@ -286,7 +286,54 @@ class NurseReader(File_reader):
     
         def getNursePassword(self) ->pd.Series:
             return self.data.iloc[:,7]
+
+class ShiftReader(File_reader):
+        def __init__(self, file:str):
+            super().__init__(file)
+
+        def getStaffId(self) ->pd.Series:
+            return self.data.iloc[:,0]
+    
+        def getStaffFirstName(self) ->pd.Series:
+            return self.data.iloc[:,1]
+    
+        def getStaffLastName(self) ->pd.Series:
+            return self.data.iloc[:,2]
+
+        def getStaffDate(self) ->pd.Series:
+            return self.data.iloc[:,3]
+
+        def getStaffStart(self) ->pd.Series:
+            return self.data.iloc[:,4]
+
+        def getStaffEnd(self) ->pd.Series:
+            return self.data.iloc[:,5]
         
+
+class PrescriptionsReader(File_reader):
+        def __init__(self, file:str):
+            super().__init__(file)
+
+        def getPrescriptionId(self) ->pd.Series:
+            return self.data.iloc[:,0]
+    
+        def getPatientId(self) ->pd.Series:
+            return self.data.iloc[:,1]
+    
+        def getDoctorId(self) ->pd.Series:
+            return self.data.iloc[:,2]
+
+        def getMedicineId(self) ->pd.Series:
+            return self.data.iloc[:,3]
+
+        def getDate(self) ->pd.Series:
+            return self.data.iloc[:,4]
+
+        def getDosage(self) ->pd.Series:
+            return self.data.iloc[:,5]
+
+        def getStatus(self) ->pd.Series:
+            return self.data.iloc[:,6]
 
 
 class MedReader(File_reader):
@@ -311,32 +358,29 @@ class MedReader(File_reader):
         def getMedPrice(self) ->pd.Series:
             return self.data.iloc[:,5]
 
-class EquipReader(File_reader):
+
+class InvMedReader(File_reader):
         def __init__(self, file:str):
             super().__init__(file)
 
-        def getEquipId(self) ->pd.Series:
+        def getMedId(self) ->pd.Series:
             return self.data.iloc[:,0]
     
-        def getEquipName(self) ->pd.Series:
+        def getMedName(self) ->pd.Series:
             return self.data.iloc[:,1]
     
-        def getEquipType(self) ->pd.Series:
+        def getMedCategory(self) ->pd.Series:
             return self.data.iloc[:,2]
     
-        def getEquipStock(self) ->pd.Series:
+        def getMedStock(self) ->pd.Series:
             return self.data.iloc[:,3]
+    
+        def getMedExpires(self) ->pd.Series:
+            return self.data.iloc[:,4]
+    
+        def getMedPrice(self) ->pd.Series:
+            return self.data.iloc[:,5]
+
+
+    
         
-
-class WardReader(File_reader):
-    def __init__(self, file:str):
-        super().__init__(file)
-
-        def getWardId(self) ->pd.Series:
-            return self.data.iloc[:,0]
-    
-        def getWardName(self) ->pd.Series:
-            return self.data.iloc[:,1]
-    
-        def getWardAvailability(self) ->pd.Series:
-            return self.data.iloc[:,2]

@@ -1,5 +1,8 @@
 from __future__ import annotations
 import os
+import ctypes
+import sys
+from pathlib import Path
 
 os.chdir(os.path.dirname(os.path.abspath(__file__))) # Change the working directory to the script's directory
 
@@ -22,12 +25,24 @@ BUTTON_BACKGROUND = "#F2F2F2"
 BUTTON_ACTIVE = "#E5E5E5"
 
 
+# Icon for Windows taskbar grouping
+def set_windows_taskbar_app_id():
+    if sys.platform != "win32":
+        return
+
+    try:
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("vitalink.hospital.system")
+    except Exception:
+        pass
+
+
 class HospitalMaster(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Hospital Management System")
         self.geometry("1365x900")
         self.configure(bg=APP_BACKGROUND)
+        self._set_window_icon()
 
         # The master container
         self.main_container = tk.Frame(self)
@@ -37,6 +52,30 @@ class HospitalMaster(tk.Tk):
         self.show_login(user_name='User')
 
         self.current_user_name = "User"
+
+
+    # το grabage collertor του tkinter καθαριζει τις φωτογραφιες αν δεν κραταμε αναφορα σε αυτες,
+    # με αποτελεσμα να μην εμφανιζονται τα εικονιδια
+    def _set_window_icon(self):
+        base_dir = Path(__file__).resolve().parent
+        icon_paths = [
+            base_dir / "Data" / "icon.png",
+            base_dir.parent / "icon.png",
+            base_dir / "Data" / "app_icon.png",
+        ]
+
+        for icon_path in icon_paths:
+            if not icon_path.exists():
+                continue
+
+            try:
+                self.app_icon = tk.PhotoImage(file=str(icon_path))
+                self.iconphoto(True, self.app_icon)
+                return
+            except Exception as error:
+                print(f"Could not load window icon from {icon_path}: {error}")
+
+        print("Could not load window icon: no icon file was found.")
 
     def show_login(self, user_name):
         self.current_user_name = user_name
@@ -75,5 +114,6 @@ class HospitalMaster(tk.Tk):
 
 
 if __name__ == "__main__":
+    set_windows_taskbar_app_id()
     app = HospitalMaster()
     app.mainloop()

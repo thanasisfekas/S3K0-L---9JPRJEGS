@@ -1,0 +1,6 @@
+lab_test_id,patient_id,folder_id,test_name,result,status,test_date
+LT001,P001,PMF001,Complete Blood Count,Hemoglobin 12.8 g/dL,Completed,2023-04-09
+LT002,P001,PMF001,Liver Panel,ALT mildly elevated,Completed,2023-04-10
+LT003,P003,PMF002,Chest X-Ray,No acute findings,Completed,2023-08-16
+LT004,P010,PMF004,Blood Glucose,212 mg/dL,Completed,2023-09-28
+LT005,P029,PMF005,Urinalysis,Pending,Pending,2023-11-16

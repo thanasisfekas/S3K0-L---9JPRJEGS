@@ -1,5 +1,5 @@
 doctor_id,first_name,last_name,specialization,phone_number,years_experience,hospital_branch,email,password
-D001,David,Taylor,Dermatology,8322010158,17,Westside Clinic,dr.david.taylor@hospital.com,m5N8vR2xT7
+D001,David,Taylor,Dermatology,8322010158,17,Westside Clinic,dr.david.taylor@hospital.com,123
 D002,Jane,Davis,Pediatrics,9004382050,24,Eastside Clinic,dr.jane.davis@hospital.com,g1Y6dF3vX8
 D003,Jane,Smith,Pediatrics,8737740598,19,Eastside Clinic,dr.jane.smith@hospital.com,s4M9tK2pL7
 D004,David,Jones,Pediatrics,6594221991,28,Central Hospital,dr.david.jones@hospital.com,w9N2rB5xV1
