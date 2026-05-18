@@ -68,7 +68,7 @@ class PaymentController:
         return False
 
     def updateBillStatus(self):
-        path = Path(__file__).resolve().parents[2] / "Data" / "final_billing.csv"
+        path = Path(__file__).resolve().parents[2] / "Data" / "billing.csv"
         reader = BillingReader(str(path))
         reader.markBillPaid(self.selected_bill_id)
 

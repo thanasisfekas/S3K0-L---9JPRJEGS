@@ -22,7 +22,7 @@ class BillManagementController:
         self.payment_controller = PaymentController(self.root, self)
 
     def getPatientBills(self):
-        path = Path(__file__).resolve().parents[2] / "Data" / "final_billing.csv"
+        path = Path(__file__).resolve().parents[2] / "Data" / "billing.csv"
         reader = BillingReader(str(path))
         self.patient_bills = reader.getBillsByPatient(self.patient_id)
         return self.patient_bills
@@ -75,7 +75,7 @@ class BillManagementController:
 
     # helpers
     def _getTreatmentDescription(self, treatment_id):
-        path = Path(__file__).resolve().parents[2] / "Data" / "final_treatments.csv"
+        path = Path(__file__).resolve().parents[2] / "Data" / "treatments.csv"
         reader = TreatmentReader(str(path))
         return reader.getTreatmentDescriptionById(treatment_id)
 
