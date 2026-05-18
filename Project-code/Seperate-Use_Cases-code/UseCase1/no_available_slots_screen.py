@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 
 
 class NoAvailableSlotsScreen:
@@ -13,3 +14,6 @@ class NoAvailableSlotsScreen:
         tk.Label(root, text="No Available Slots", font=("Arial", 18, "bold"), fg="red", bg="#ffffff").pack(pady=50)
         tk.Label(root, text="No slots found for this date.", font=("Arial", 12), bg="#ffffff").pack(pady=10)
         tk.Button(root, text="Find Next Available Date", bg="#007bff", fg="white", font=("Arial", 12, "bold"), height=2, command=on_next).pack(fill="x", padx=60, pady=40)
+
+    def showError(self, message):
+        messagebox.showerror("Unavailable", message)
