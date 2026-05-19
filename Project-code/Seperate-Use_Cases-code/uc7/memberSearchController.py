@@ -1,5 +1,5 @@
 from memberSearchScreen import MemberSearchScreen
-from hospitalStaff import HospitalStaff
+from readerHandlers import HospitalStaffReader
 from memberResultSearchScreen import MemberResultSearchScreen
 from memberDetailsScreen import MemberDetailsScreen
 from shiftFormController import ShiftFormController
@@ -10,7 +10,7 @@ class MemberSearchController:
     def __init__(self,root):
         self.root = root
         self.current_screen = None
-        self.HospitalStaff = HospitalStaff()
+        self.HospitalStaff = HospitalStaffReader()
         self.input_data = {}
         self.current_controller = None
     
@@ -22,7 +22,6 @@ class MemberSearchController:
     def checkInput(self, input):
         input = input.strip()
     
-        #Έλεγχος για σωστό format input του χρήστη
         if  input.replace(" ", "").isalpha() and " " in input:
             name, surname = input.lower().split(" ", 1)
             return True , name, surname
@@ -39,7 +38,6 @@ class MemberSearchController:
 
         input = self.current_screen.getInput()
 
-        #Ελέγχει αν είναι κενό το input 
         if not input:
             messagebox.showwarning("Warning!", "Enter Name and Surname.")
             return None
@@ -48,7 +46,6 @@ class MemberSearchController:
 
         if flag :
             results = self.HospitalStaff.find_by_name_surname(name, surname)
-            #Ελέγχει αν είναι κενό το input 
             if results:
                 self.displaySearchResults(results)
 

@@ -1,6 +1,6 @@
 from shiftRegScreen import ShiftRegScreen
-from hospitalStaff import HospitalStaff
-from shift import Shift
+from readerHandlers import HospitalStaffReader
+from readerHandlers import ShiftReader
 from datetime import datetime
 import tkinter as tk
 from tkinter import messagebox
@@ -61,14 +61,15 @@ class ShiftFormController:
             return
 
         if self.checkAvailability():
-            create_shift = Shift(self.id, self.name, self.surname, self.date, self.time_begin, self.time_end)
+            create_shift = ShiftReader("scheduledShifts.csv")
+            create_shift.save_shift(self.id, self.name, self.surname, self.date, self.time_begin, self.time_end)
             messagebox.showinfo("Success!", "Shift registered successfully!")
             time.sleep(1)
             self.displaySearchScreen()
         return 
 
     def checkAvailability(self):
-        hospStaff = HospitalStaff()
+        hospStaff = HospitalStaffReader()
         existing_shifts = hospStaff.find_Shifts(self.id)
         shifts_today = []
 

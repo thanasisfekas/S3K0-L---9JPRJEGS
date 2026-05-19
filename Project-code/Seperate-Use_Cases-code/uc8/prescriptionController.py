@@ -1,6 +1,4 @@
-from prescriptionLog import PrescriptionLog
-from medicine import Medicine
-from doctor import Doctor 
+from readerHandlers import PrescriptionsReader, MedReader, DocReader, InvMedReader
 from prescriptionsScreen import PrescriptionsScreen   
 from drugScreen import DrugScreen
 from medicineQuantityScreen import MedicineQuantityScreen
@@ -23,8 +21,8 @@ class PrescriptionController:
         self.searchPrescriptions()
 
     def searchPrescriptions(self):
-        p = PrescriptionLog(self.id)
-        raw_prescriptions = p.findPrescriptions()
+        p = PrescriptionsReader("prescriptions.csv")
+        raw_prescriptions = p.findPrescriptions(self.id)
 
         if raw_prescriptions: 
             grouped = {}
@@ -59,22 +57,25 @@ class PrescriptionController:
             self.returnToSearchScreen()  
 
     def mapMedicine(self):
+        m = MedReader("medicines.csv")
+    
         for prescription in self.prescriptions:
             for med_item in prescription.get('medicines', []):
-                m = Medicine(med_item['id'])
-                m_name = m.findMed()  
-                if m_name:
+                clean_med_id = str(med_item['id']).strip()
+            
+                m_name = m.findMed(clean_med_id)  
+                if m_name and m_name != "Unknown Medicine":
                     med_item['name'] = m_name
                 else:
-                    med_item['name'] = f"Unknown ({med_item['id']})"
-        return 
+                    med_item['name'] = f"Unknown ({clean_med_id})"
+        return
 
     def mapDoctor(self):
         for prescription in self.prescriptions:
             doc_id = prescription.get('doctor_id')
             if doc_id:
-                d = Doctor(doc_id)
-                d_name = d.findDoc()
+                d = DocReader("doctors.csv")
+                d_name = d.findDoc(doc_id)
                 prescription['doctor_id'] = d_name
 
     def returnToSearchScreen(self):
@@ -121,13 +122,13 @@ class PrescriptionController:
         med_id = drug.get('id')
         med_name = drug.get('name')
         
-        from inventory import Inventory
-        inv = Inventory(med_id)
-        current_stock = inv.searchQuantity()
+    
+        inv = InvMedReader("medicines.csv")
+        current_stock = inv.searchQuantity(med_id)
         
         if current_stock >= quantity_requested:
             new_stock = current_stock - quantity_requested
-            inv.updateInventory(new_stock)
+            inv.updateInventory(med_id, new_stock)
             
             messagebox.showinfo("Success!", f"Successfully processed {quantity_requested} unit(s) of {med_name}.")
             

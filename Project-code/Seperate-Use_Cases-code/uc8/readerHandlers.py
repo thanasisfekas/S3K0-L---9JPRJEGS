@@ -2,35 +2,47 @@ from file_reader import File_reader
 import pandas as pd
 
 class DocReader(File_reader):
-    def __init__(self, file: str)->None:
+    def __init__(self, file: str) -> None:
         super().__init__(file)
 
     def getDoctorId(self) -> pd.Series:
-        return self.data.iloc[:,0]
+        return self.data.iloc[:, 0]
     
-    def getDoctorFirstName(self) ->pd.Series:
-        return self.data.iloc[:,1]
+    def getDoctorFirstName(self) -> pd.Series:
+        return self.data.iloc[:, 1]
     
-    def getDoctorLastName(self) ->pd.Series:
-        return self.data.iloc[:,2]
+    def getDoctorLastName(self) -> pd.Series:
+        return self.data.iloc[:, 2]
     
-    def getDoctorSpecialization(self) ->pd.Series:
-        return self.data.iloc[:,3]
+    def getDoctorSpecialization(self) -> pd.Series:
+        return self.data.iloc[:, 3]
     
-    def getDoctorPhoneNuber(self) ->pd.Series:
-        return self.data.iloc[:,4]
+    def getDoctorNumber(self) -> pd.Series:  
+        return self.data.iloc[:, 4]
     
-    def getDoctorExperience(self) ->pd.Series:
-        return self.data.iloc[:,5]
+    def getDoctorExperience(self) -> pd.Series:
+        return self.data.iloc[:, 5]
     
-    def getDoctorBrach(self) ->pd.Series:
-        return self.data.iloc[:,6]
+    def getDoctorBranch(self) -> pd.Series:       
+        return self.data.iloc[:, 6]
     
-    def getDoctorEmail(self) ->pd.Series:
-        return self.data.iloc[:,7]
+    def getDoctorEmail(self) -> pd.Series:
+        return self.data.iloc[:, 7]
     
-    def getDoctorPassword(self) ->pd.Series:
-        return self.data.iloc[:,8]
+    def getDoctorPassword(self) -> pd.Series:
+        return self.data.iloc[:, 8]
+
+    def findDoc(self, doc_id):
+        df = self.data
+        mask = (df.iloc[:, 0].astype(str).str.strip() == str(doc_id).strip())
+        result = df[mask]
+
+        if not result.empty:
+            name = result.iloc[0, 1]
+            lastname = result.iloc[0, 2]
+            return f"{name} {lastname}"
+            
+        return "Unknown Doctor"
 
 class AppointmentReader(File_reader):
     def __init__(self, file : str)->None:
@@ -141,46 +153,75 @@ class InvManagerReader(File_reader):
     def getInvManagerPassword(self)->pd.Series:
         return self.data.iloc[:,7]
 
-
 class PatientReader(File_reader):
-    def __init__(self, file: str)->None:
+    def __init__(self, file: str) -> None:
         super().__init__(file)
 
-    def getPatientId(self)->pd.Series:
-        return self.data.iloc[:,0]
+    def getPatientId(self) -> pd.Series:
+        return self.data.iloc[:, 0]
 
-    def getPatientFirstName(self)->pd.Series:
-        return self.data.iloc[:,1]
+    def getPatientFirstName(self) -> pd.Series:
+        return self.data.iloc[:, 1]
 
-    def getPatientLastName(self)->pd.Series:
-        return self.data.iloc[:,2]
+    def getPatientLastName(self) -> pd.Series:
+        return self.data.iloc[:, 2]
     
-    def getPatientGender(self)->pd.Series:
-        return self.data.iloc[:,3]
+    def getPatientGender(self) -> pd.Series:
+        return self.data.iloc[:, 3]
 
-    def getPatientBirth(self)->pd.Series:
-        return self.data.iloc[:,4]
+    def getPatientBirth(self) -> pd.Series:
+        return self.data.iloc[:, 4]
 
-    def getPatientNumber(self)->pd.Series:
-        return self.data.iloc[:,5]
+    def getPatientNumber(self) -> pd.Series:
+        return self.data.iloc[:, 5]
 
-    def getPatientAddress(self)->pd.Series:
-        return self.data.iloc[:,6]
+    def getPatientAddress(self) -> pd.Series:
+        return self.data.iloc[:, 6]
 
-    def getPatientRegistrationDate(self)->pd.Series:
-        return self.data.iloc[:,7]
+    def getPatientRegistrationDate(self) -> pd.Series:
+        return self.data.iloc[:, 7]
 
-    def getPatientInsuranceProvider(self)->pd.Series:
-        return self.data.iloc[:,8]
+    def getPatientInsuranceProvider(self) -> pd.Series:
+        return self.data.iloc[:, 8]
 
-    def getPatientInsuranceNumber(self)->pd.Series:
-        return self.data.iloc[:,9]
+    def getPatientInsuranceNumber(self) -> pd.Series:
+        return self.data.iloc[:, 9]
 
-    def getPatientEmail(self)->pd.Series:
-        return self.data.iloc[:,10]
+    def getPatientEmail(self) -> pd.Series:
+        return self.data.iloc[:, 10]
     
-    def getPatientPassword(self)->pd.Series:
-        return self.data.iloc[:,11]
+    def getPatientPassword(self) -> pd.Series:
+        return self.data.iloc[:, 11]
+
+    def find_patient(self, id, name, last_name):
+        pat_id = str(id).strip()
+        df = self.data 
+
+        mask = (df.iloc[:, 0].astype(str) == pat_id)
+        
+        if name:
+            mask &= (df.iloc[:, 1].astype(str).str.lower() == str(name).strip().lower())
+        if last_name:
+            mask &= (df.iloc[:, 2].astype(str).str.lower() == str(last_name).strip().lower())
+
+        result = df[mask]
+
+        if not result.empty:
+            return [self.process_info_patient(row) for _, row in result.iterrows()]
+        
+        return None
+
+    def process_info_patient(self, row):
+        processed_data = {
+            'patient_id': row.iloc[0],
+            'first_name': row.iloc[1],
+            'last_name': row.iloc[2],
+            'gender': row.iloc[3],
+            'date_of_birth': row.iloc[4]
+        }
+        return processed_data
+    
+
 
 class PharmacistReader(File_reader):
     def __init__(self, file: str)->None:
@@ -311,75 +352,135 @@ class ShiftReader(File_reader):
         
 
 class PrescriptionsReader(File_reader):
-        def __init__(self, file:str):
-            super().__init__(file)
+    def __init__(self, file: str):
+        super().__init__(file)
 
-        def getPrescriptionId(self) ->pd.Series:
-            return self.data.iloc[:,0]
-    
-        def getPatientId(self) ->pd.Series:
-            return self.data.iloc[:,1]
-    
-        def getDoctorId(self) ->pd.Series:
-            return self.data.iloc[:,2]
+    def getPrescriptionId(self) -> pd.Series:
+        return self.data.iloc[:, 0]
 
-        def getMedicineId(self) ->pd.Series:
-            return self.data.iloc[:,3]
+    def getPatientId(self) -> pd.Series:
+        return self.data.iloc[:, 1]
 
-        def getDate(self) ->pd.Series:
-            return self.data.iloc[:,4]
+    def getDoctorId(self) -> pd.Series:
+        return self.data.iloc[:, 2]
 
-        def getDosage(self) ->pd.Series:
-            return self.data.iloc[:,5]
+    def getMedicineId(self) -> pd.Series:
+        return self.data.iloc[:, 3]
 
-        def getStatus(self) ->pd.Series:
-            return self.data.iloc[:,6]
+    def getDate(self) -> pd.Series:
+        return self.data.iloc[:, 4]
+
+    def getDosage(self) -> pd.Series:
+        return self.data.iloc[:, 5]
+
+    def getStatus(self) -> pd.Series:
+        return self.data.iloc[:, 6]
+
+    def findPrescriptions(self, patient_id):
+        pat_id = str(patient_id).strip()
+        df = self.data  
+        
+        mask = (df.iloc[:, 1].astype(str).str.strip() == pat_id)
+        result = df[mask]
+
+        if not result.empty:
+            results = [self.process_prescription_info(row) for _, row in result.iterrows()]
+            print(results)
+            return results
+        
+        return None
+
+    def process_prescription_info(self, row):
+        return {
+            'prescription_id': row.iloc[0],
+            'patient_id': row.iloc[1],
+            'doctor_id': row.iloc[2],
+            'medicine_id': row.iloc[3],
+            'date': row.iloc[4],
+            'dosage': row.iloc[5],
+            'status': row.iloc[6]}
 
 
 class MedReader(File_reader):
-        def __init__(self, file:str):
-            super().__init__(file)
+    def __init__(self, file: str):
+        super().__init__(file)
 
-        def getMedId(self) ->pd.Series:
-            return self.data.iloc[:,0]
-    
-        def getMedName(self) ->pd.Series:
-            return self.data.iloc[:,1]
-    
-        def getMedCategory(self) ->pd.Series:
-            return self.data.iloc[:,2]
-    
-        def getMedStock(self) ->pd.Series:
-            return self.data.iloc[:,3]
-    
-        def getMedExpires(self) ->pd.Series:
-            return self.data.iloc[:,4]
-    
-        def getMedPrice(self) ->pd.Series:
-            return self.data.iloc[:,5]
+    def getMedId(self) -> pd.Series:
+        return self.data.iloc[:, 0]
 
+    def getMedName(self) -> pd.Series:
+        return self.data.iloc[:, 1]
+
+    def getMedCategory(self) -> pd.Series:
+        return self.data.iloc[:, 2]
+
+    def getMedStock(self) -> pd.Series:
+        return self.data.iloc[:, 3]
+
+    def getMedExpires(self) -> pd.Series:
+        return self.data.iloc[:, 4]
+
+    def getMedPrice(self) -> pd.Series:
+        return self.data.iloc[:, 5]
+
+    def findMed(self, med_id):
+        target_id = str(med_id).strip()
+        df = self.data  
+        
+        mask = (df.iloc[:, 0].astype(str).str.strip() == target_id)
+        result = df[mask]
+
+        if not result.empty:
+            return result.iloc[0, 1]
+        
+        return "Unknown Medicine"
+
+
+import pandas as pd
 
 class InvMedReader(File_reader):
-        def __init__(self, file:str):
-            super().__init__(file)
+    def __init__(self, file: str):
+        super().__init__(file)
 
-        def getMedId(self) ->pd.Series:
-            return self.data.iloc[:,0]
+    def getMedId(self) -> pd.Series:
+        return self.data.iloc[:, 0]
+
+    def getMedName(self) -> pd.Series:
+        return self.data.iloc[:, 1]
+
+    def getMedCategory(self) -> pd.Series:
+        return self.data.iloc[:, 2]
+
+    def getMedStock(self) -> pd.Series:
+        return self.data.iloc[:, 3]
+
+    def getMedExpires(self) -> pd.Series:
+        return self.data.iloc[:, 4]
+
+    def getMedPrice(self) -> pd.Series:
+        return self.data.iloc[:, 5]
+
+    def searchQuantity(self, med_id):
+        med_id = str(med_id).strip()
+        df = self.data  
+        
+        mask = (df.iloc[:, 0].astype(str).str.strip() == med_id)
+        result = df[mask]
     
-        def getMedName(self) ->pd.Series:
-            return self.data.iloc[:,1]
+        if not result.empty:
+            return int(result.iloc[0, 3])
+        
+        return 0
+
+    def updateInventory(self, med_id, new_quantity):
+        med_id = str(med_id).strip()
+        df = self.data  
     
-        def getMedCategory(self) ->pd.Series:
-            return self.data.iloc[:,2]
+        mask = (df.iloc[:, 0].astype(str).str.strip() == med_id)
     
-        def getMedStock(self) ->pd.Series:
-            return self.data.iloc[:,3]
-    
-        def getMedExpires(self) ->pd.Series:
-            return self.data.iloc[:,4]
-    
-        def getMedPrice(self) ->pd.Series:
-            return self.data.iloc[:,5]
+        if mask.any():
+            df.iloc[mask, 3] = new_quantity
+            df.to_csv(self.file, index=False) 
 
 
     

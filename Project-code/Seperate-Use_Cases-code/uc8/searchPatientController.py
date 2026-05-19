@@ -1,6 +1,6 @@
 from patientSearchScreen import PatientSearchScreen
 from patientDetailsScreen import PatientDetailsScreen
-from patient import Patient
+from readerHandlers import PatientReader
 from prescriptionController import PrescriptionController
 from tkinter import messagebox
 import tkinter as tk
@@ -31,9 +31,9 @@ class SearchPatientController:
             self.id = data['id']
             self.first_name, self.last_name = ([p for p in data.get('name', '').split() if len(p) >= 2] + ["", ""])[:2]
 
-            patient_inst = Patient(self.id, self.first_name, self.last_name)
+            patient_inst = PatientReader("patients.csv")
             print(data)
-            results = patient_inst.find_patient()
+            results = patient_inst.find_patient(self.id, self.first_name, self.last_name)
 
             if not results:
                 messagebox.showinfo("Error!", "No patient found with this ID.\n Try again...")
