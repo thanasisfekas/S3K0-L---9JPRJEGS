@@ -1,9 +1,17 @@
 from __future__ import annotations
 import json
+import sys
+import tkinter as tk
 import customtkinter as ctk
 from pathlib import Path
 from tkinter import messagebox
 from MenuControllers.centralMenu import CentralMenu
+
+UC8_DIR = Path(__file__).resolve().parents[1] / "Seperate-Use_Cases-code" / "uc8"
+if str(UC8_DIR) not in sys.path:
+    sys.path.append(str(UC8_DIR))
+
+from searchPatientController import SearchPatientController
 
 BG_COLOR = "#F8F9FA"
 CARD_WHITE = "#FFFFFF"
@@ -12,10 +20,19 @@ TEXT_DARK = "#1E293B"
 TEXT_MUTE = "#64748B"
 
 
+class EmbeddedUseCaseFrame(tk.Frame):
+    def title(self, *_args, **_kwargs):
+        return None
+
+    def geometry(self, *_args, **_kwargs):
+        return None
+
+
 class PharmacistPortalFrame(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+        self.drug_administration_controller = None
         self.configure(fg_color=BG_COLOR)
 
 
@@ -35,8 +52,26 @@ class PharmacistPortalFrame(ctk.CTkFrame):
         self.container.grid_rowconfigure(0, weight=1)
 
         
+        self.drug_administration_page = ctk.CTkFrame(self.container, fg_color="transparent")
+        self.drug_administration_page.grid_columnconfigure(0, weight=1)
+        self.drug_administration_page.grid_rowconfigure(1, weight=1)
+
+        self.drug_back_button = ctk.CTkButton(
+            self.drug_administration_page,
+            text="Back to Menu",
+            width=120,
+            fg_color="transparent",
+            text_color=ACCENT_BLUE,
+            command=self.return_to_menu,
+        )
+        self.drug_back_button.grid(row=0, column=0, sticky="w", pady=(0, 10))
+
+        self.drug_administration_host = EmbeddedUseCaseFrame(self.drug_administration_page, bg="#ffffff", highlightthickness=0)
+        self.drug_administration_host.grid(row=1, column=0, sticky="nsew")
+
         self.sub_pages = {
-            "menu": PharmacistCentralMenu(self.container, self)}
+            "menu": PharmacistCentralMenu(self.container, self),
+            "drug_administration": self.drug_administration_page}
         
         for sp in self.sub_pages.values():
             sp.grid(row=0, column=0, sticky="nsew")
@@ -54,6 +89,20 @@ class PharmacistPortalFrame(ctk.CTkFrame):
     def show_sub_page(self, name):
         self.sub_pages[name].tkraise()
 
+    def start_drug_administration_flow(self):
+        self.show_sub_page("drug_administration")
+        self._clear_drug_administration_host()
+        self.drug_administration_controller = SearchPatientController(self.drug_administration_host)
+        self.drug_administration_controller.displaySearchScreen()
+
+    def return_to_menu(self):
+        self._clear_drug_administration_host()
+        self.show_sub_page("menu")
+
+    def _clear_drug_administration_host(self):
+        for widget in self.drug_administration_host.winfo_children():
+            widget.destroy()
+
     def handle_logout(self):
         try:
             self.controller.show_frame("LoginPage")
@@ -63,5 +112,12 @@ class PharmacistPortalFrame(ctk.CTkFrame):
 
 class PharmacistCentralMenu(CentralMenu):
     def __init__(self, parent, portal):
-        super().__init__(parent, portal,user_t="PHARMACIST")
+        super().__init__(
+            parent,
+            portal,
+            user_t="PHARMACIST",
+            tile_commands={
+                "Drug Administration": portal.start_drug_administration_flow,
+            },
+        )
 

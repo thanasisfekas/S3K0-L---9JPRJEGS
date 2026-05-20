@@ -10,7 +10,7 @@ from MenuControllers.login import LoginFrame
 from MenuControllers.patient_dashboard import PatientPortalFrame
 from MenuControllers.doctor_page import DoctorPortalFrame
 from MenuControllers.pharmacist_page import PharmacistPortalFrame
-from MenuControllers.inventory_manager_page import InventoryManagerPortalFrame
+#from MenuControllers.inventory_manager_page import InventoryManagerPortalFrame
 from MenuControllers.hr_manager_page import HRManagerPortalFrame
 from MenuControllers.secretary_page import SecretaryPortalFrame
 import tkinter as tk

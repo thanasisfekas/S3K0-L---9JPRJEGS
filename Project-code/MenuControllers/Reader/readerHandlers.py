@@ -40,6 +40,18 @@ class DocReader(File_reader):
         row = self.data[self.data["doctor_id"] == doctor_id].iloc[0]
         return f"Dr. {row['first_name']} {row['last_name']}"
 
+    def findDoc(self, doc_id):
+        df = self.data
+        mask = df.iloc[:, 0].astype(str).str.strip() == str(doc_id).strip()
+        result = df[mask]
+
+        if not result.empty:
+            name = result.iloc[0, 1]
+            lastname = result.iloc[0, 2]
+            return f"{name} {lastname}"
+
+        return "Unknown Doctor"
+
 class DoctorSpecialtyReader(File_reader):
     def __init__(self, file: str) -> None:
         super().__init__(file)
@@ -251,6 +263,33 @@ class PatientReader(File_reader):
     def getPatientPassword(self)->pd.Series:
         return self.data.iloc[:,11]
 
+    def find_patient(self, id, name, last_name):
+        pat_id = str(id).strip()
+        df = self.data
+
+        mask = df.iloc[:, 0].astype(str).str.strip() == pat_id
+
+        if name:
+            mask &= df.iloc[:, 1].astype(str).str.lower() == str(name).strip().lower()
+        if last_name:
+            mask &= df.iloc[:, 2].astype(str).str.lower() == str(last_name).strip().lower()
+
+        result = df[mask]
+
+        if not result.empty:
+            return [self.process_info_patient(row) for _, row in result.iterrows()]
+
+        return None
+
+    def process_info_patient(self, row):
+        return {
+            "patient_id": row.iloc[0],
+            "first_name": row.iloc[1],
+            "last_name": row.iloc[2],
+            "gender": row.iloc[3],
+            "date_of_birth": row.iloc[4],
+        }
+
 class PharmacistReader(File_reader):
     def __init__(self, file: str)->None:
         super().__init__(file)
@@ -359,6 +398,130 @@ class NurseReader(File_reader):
     
         def getNursePassword(self) ->pd.Series:
             return self.data.iloc[:,7]
+
+
+class ShiftReader(File_reader):
+        def __init__(self, file:str):
+            super().__init__(file)
+
+        def getStaffId(self) ->pd.Series:
+            return self.data.iloc[:,0]
+
+        def getStaffFirstName(self) ->pd.Series:
+            return self.data.iloc[:,1]
+
+        def getStaffLastName(self) ->pd.Series:
+            return self.data.iloc[:,2]
+
+        def getStaffDate(self) ->pd.Series:
+            return self.data.iloc[:,3]
+
+        def getStaffStart(self) ->pd.Series:
+            return self.data.iloc[:,4]
+
+        def getStaffEnd(self) ->pd.Series:
+            return self.data.iloc[:,5]
+
+        def save_shift(self, id, name, surname, date, time_begin, time_end):
+            new_shift = {
+                "id": [id],
+                "first_name": [name],
+                "last_name": [surname],
+                "date": [date],
+                "start": [time_begin],
+                "end": [time_end],
+            }
+            new_df = pd.DataFrame(new_shift)
+            updated_df = pd.concat([self.data, new_df], ignore_index=True)
+            updated_df.to_csv(self.file, index=False)
+            self.data = updated_df
+
+
+class HospitalStaffReader:
+    def __init__(self):
+        self.DocReader = DocReader("doctors.csv")
+        self.NurseReader = NurseReader("nurses.csv")
+        self.ShiftReader = ShiftReader("scheduledShifts.csv")
+
+    def find_by_name_surname(self, name, surname):
+        name = name.lower()
+        surname = surname.lower()
+        results = []
+
+        doc_df = self.DocReader.data
+        doc_mask = (doc_df.iloc[:, 1].astype(str).str.lower() == name) & (doc_df.iloc[:, 2].astype(str).str.lower() == surname)
+        doc_result = doc_df[doc_mask]
+
+        if not doc_result.empty:
+            results.extend([
+                self.process_info_doctor(row.to_dict())
+                for _, row in doc_result.iterrows()
+            ])
+
+        nurse_df = self.NurseReader.data
+        nurse_mask = (nurse_df.iloc[:, 1].astype(str).str.lower() == name) & (nurse_df.iloc[:, 2].astype(str).str.lower() == surname)
+        nurse_result = nurse_df[nurse_mask]
+
+        if not nurse_result.empty:
+            results.extend([
+                self.process_info_nurse(row.to_dict())
+                for _, row in nurse_result.iterrows()
+            ])
+
+        return results if results else None
+
+    def find_Shifts(self, id):
+        id = str(id)
+        results = []
+
+        shift_df = self.ShiftReader.data
+        shift_mask = shift_df.iloc[:, 0].astype(str) == id
+        shift_result = shift_df[shift_mask]
+
+        if not shift_result.empty:
+            results.extend([
+                self.process_info_shift(row.to_dict())
+                for _, row in shift_result.iterrows()
+            ])
+
+        return results if results else None
+
+    def process_info_doctor(self, raw_data):
+        return {
+            "id": raw_data.get("id", raw_data.get("doctor_id")),
+            "first_name": raw_data.get("first_name"),
+            "last_name": raw_data.get("last_name"),
+            "specialization": raw_data.get("specialization", "Doctor"),
+            "phone_number": raw_data.get("phone_number"),
+            "years_experience": raw_data.get("years_experience"),
+            "hospital_branch": raw_data.get("hospital_branch"),
+            "email": raw_data.get("email"),
+            "password": raw_data.get("password"),
+        }
+
+    def process_info_nurse(self, raw_data):
+        return {
+            "id": raw_data.get("id", raw_data.get("nurse_id")),
+            "first_name": raw_data.get("first_name"),
+            "last_name": raw_data.get("last_name"),
+            "specialization": raw_data.get("specialization", raw_data.get("branch", "Nurse")),
+            "phone_number": raw_data.get("phone_number"),
+            "experience": raw_data.get("experience", raw_data.get("experience_years")),
+            "branch": raw_data.get("branch"),
+            "email": raw_data.get("email"),
+            "password": raw_data.get("password"),
+        }
+
+    def process_info_shift(self, raw_data):
+        return {
+            "id": raw_data.get("id"),
+            "first_name": raw_data.get("first_name"),
+            "last_name": raw_data.get("last_name"),
+            "date": raw_data.get("date"),
+            "start": raw_data.get("start"),
+            "begin": raw_data.get("start"),
+            "end": raw_data.get("end"),
+        }
         
 
 
@@ -383,6 +546,89 @@ class MedReader(File_reader):
     
         def getMedPrice(self) ->pd.Series:
             return self.data.iloc[:,5]
+
+        def findMed(self, med_id):
+            target_id = str(med_id).strip()
+            df = self.data
+
+            mask = df.iloc[:, 0].astype(str).str.strip() == target_id
+            result = df[mask]
+
+            if not result.empty:
+                return result.iloc[0, 1]
+
+            return "Unknown Medicine"
+
+
+class PrescriptionsReader(File_reader):
+    def __init__(self, file: str):
+        super().__init__(file)
+
+    def getPrescriptionId(self) -> pd.Series:
+        return self.data.iloc[:, 0]
+
+    def getPatientId(self) -> pd.Series:
+        return self.data.iloc[:, 1]
+
+    def getDoctorId(self) -> pd.Series:
+        return self.data.iloc[:, 2]
+
+    def getMedicineId(self) -> pd.Series:
+        return self.data.iloc[:, 3]
+
+    def getDate(self) -> pd.Series:
+        return self.data.iloc[:, 4]
+
+    def getDosage(self) -> pd.Series:
+        return self.data.iloc[:, 5]
+
+    def getStatus(self) -> pd.Series:
+        return self.data.iloc[:, 6]
+
+    def findPrescriptions(self, patient_id):
+        pat_id = str(patient_id).strip()
+        df = self.data
+
+        mask = df.iloc[:, 1].astype(str).str.strip() == pat_id
+        result = df[mask]
+
+        if not result.empty:
+            return [self.process_prescription_info(row) for _, row in result.iterrows()]
+
+        return None
+
+    def process_prescription_info(self, row):
+        return {
+            "prescription_id": row.iloc[0],
+            "patient_id": row.iloc[1],
+            "doctor_id": row.iloc[2],
+            "medicine_id": row.iloc[3],
+            "date": row.iloc[4],
+            "dosage": row.iloc[5],
+            "status": row.iloc[6],
+        }
+
+
+class InvMedReader(MedReader):
+    def searchQuantity(self, med_id):
+        med_id = str(med_id).strip()
+        df = self.data
+
+        mask = df.iloc[:, 0].astype(str).str.strip() == med_id
+        result = df[mask]
+
+        if not result.empty:
+            return int(result.iloc[0, 3])
+
+        return 0
+
+    def updateInventory(self, med_id, new_quantity):
+        med_id = str(med_id).strip()
+        mask = self.data.iloc[:, 0].astype(str).str.strip() == med_id
+
+        if mask.any():
+            self.data.loc[mask, self.data.columns[3]] = new_quantity
+            self.data.to_csv(self.file, index=False)
 
 class EquipReader(File_reader):
         def __init__(self, file:str):
