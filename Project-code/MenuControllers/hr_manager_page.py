@@ -1,9 +1,17 @@
 from __future__ import annotations
 import json
+import sys
+import tkinter as tk
 import customtkinter as ctk
 from pathlib import Path
 from tkinter import messagebox
 from MenuControllers.centralMenu import CentralMenu
+
+UC7_DIR = Path(__file__).resolve().parents[1] / "Seperate-Use_Cases-code" / "uc7"
+if str(UC7_DIR) not in sys.path:
+    sys.path.append(str(UC7_DIR))
+
+from memberSearchController import MemberSearchController
 
 BG_COLOR = "#F8F9FA"
 CARD_WHITE = "#FFFFFF"
@@ -11,10 +19,19 @@ ACCENT_BLUE = "#2563EB"
 TEXT_DARK = "#1E293B"
 TEXT_MUTE = "#64748B"
 
+class EmbeddedUseCaseFrame(tk.Frame):
+    def title(self, *_args, **_kwargs):
+        return None
+
+    def geometry(self, *_args, **_kwargs):
+        return None
+
+
 class HRManagerPortalFrame(ctk.CTkFrame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
+        self.shift_assignment_controller = None
         self.configure(fg_color=BG_COLOR)
 
 
@@ -34,8 +51,26 @@ class HRManagerPortalFrame(ctk.CTkFrame):
         self.container.grid_rowconfigure(0, weight=1)
 
         
+        self.shift_assignment_page = ctk.CTkFrame(self.container, fg_color="transparent")
+        self.shift_assignment_page.grid_columnconfigure(0, weight=1)
+        self.shift_assignment_page.grid_rowconfigure(1, weight=1)
+
+        self.shift_back_button = ctk.CTkButton(
+            self.shift_assignment_page,
+            text="Back to Menu",
+            width=120,
+            fg_color="transparent",
+            text_color=ACCENT_BLUE,
+            command=self.return_to_menu,
+        )
+        self.shift_back_button.grid(row=0, column=0, sticky="w", pady=(0, 10))
+
+        self.shift_assignment_host = EmbeddedUseCaseFrame(self.shift_assignment_page, bg="#ffffff", highlightthickness=0)
+        self.shift_assignment_host.grid(row=1, column=0, sticky="nsew")
+
         self.sub_pages = {
-            "menu": HRManagerCentralMenu(self.container, self)}
+            "menu": HRManagerCentralMenu(self.container, self),
+            "shift_assignment": self.shift_assignment_page}
         
         for sp in self.sub_pages.values():
             sp.grid(row=0, column=0, sticky="nsew")
@@ -53,6 +88,20 @@ class HRManagerPortalFrame(ctk.CTkFrame):
     def show_sub_page(self, name):
         self.sub_pages[name].tkraise()
 
+    def start_shift_assignment_flow(self):
+        self.show_sub_page("shift_assignment")
+        self._clear_shift_assignment_host()
+        self.shift_assignment_controller = MemberSearchController(self.shift_assignment_host)
+        self.shift_assignment_controller.displaySearchScreen()
+
+    def return_to_menu(self):
+        self._clear_shift_assignment_host()
+        self.show_sub_page("menu")
+
+    def _clear_shift_assignment_host(self):
+        for widget in self.shift_assignment_host.winfo_children():
+            widget.destroy()
+
     def handle_logout(self):
         try:
             self.controller.show_frame("LoginPage")
@@ -62,5 +111,12 @@ class HRManagerPortalFrame(ctk.CTkFrame):
 
 class HRManagerCentralMenu(CentralMenu):
     def __init__(self,parent,portal):
-        super().__init__(parent, portal,user_t="HR")
+        super().__init__(
+            parent,
+            portal,
+            user_t="HR",
+            tile_commands={
+                "Shift and Staff Assignment": portal.start_shift_assignment_flow,
+            },
+        )
 

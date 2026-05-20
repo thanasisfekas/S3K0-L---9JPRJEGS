@@ -1,6 +1,6 @@
 from patientSearchScreen import PatientSearchScreen
 from patientDetailsScreen import PatientDetailsScreen
-from readerHandlers import PatientReader
+from MenuControllers.Reader.readerHandlers import PatientReader
 from prescriptionController import PrescriptionController
 from tkinter import messagebox
 import tkinter as tk

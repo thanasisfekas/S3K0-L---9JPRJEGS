@@ -1,5 +1,5 @@
 from memberSearchScreen import MemberSearchScreen
-from readerHandlers import HospitalStaffReader
+from MenuControllers.Reader.readerHandlers import HospitalStaffReader
 from memberResultSearchScreen import MemberResultSearchScreen
 from memberDetailsScreen import MemberDetailsScreen
 from shiftFormController import ShiftFormController

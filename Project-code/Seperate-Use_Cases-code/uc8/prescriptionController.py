@@ -1,4 +1,4 @@
-from readerHandlers import PrescriptionsReader, MedReader, DocReader, InvMedReader
+from MenuControllers.Reader.readerHandlers import PrescriptionsReader, MedReader, DocReader, InvMedReader
 from prescriptionsScreen import PrescriptionsScreen   
 from drugScreen import DrugScreen
 from medicineQuantityScreen import MedicineQuantityScreen
