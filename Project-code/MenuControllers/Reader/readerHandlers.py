@@ -413,3 +413,34 @@ class WardReader(File_reader):
     
         def getWardAvailability(self) ->pd.Series:
             return self.data.iloc[:,2]
+        
+class LabTestRequestReader(File_reader):
+    def __init__(self, file:str):
+        super().__init__(file)
+
+        def getReqId(self) ->pd.Series:
+            return self.data.iloc[:,0]
+    
+        def getReqPatientId(self) ->pd.Series:
+            return self.data.iloc[:,1]
+    
+        def getFolderId(self) ->pd.Series:
+            return self.data.iloc[:,2]
+        
+        def getReqDocId(self) ->pd.Series:
+            return self.data.iloc[:,2]
+                                  
+        def getTestName(self) ->pd.Series:
+            return self.data.iloc[:,3]
+        
+        def getReqReason(self) ->pd.Series:
+            return self.data.iloc[:,4]
+        
+        def getReqStatus(self) ->pd.Series:
+            return self.data.iloc[:,5]
+        
+        def getReqDate(self) ->pd.Series:
+            return self.data.iloc[:,6]
+        
+        # def submitLabtest(self,req):
+        #     pass
