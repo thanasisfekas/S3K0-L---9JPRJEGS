@@ -6,8 +6,6 @@ from pathlib import Path
 
 os.chdir(os.path.dirname(os.path.abspath(__file__))) # Change the working directory to the script's directory
 
-#this is a test
-
 from MenuControllers.login import LoginFrame
 from MenuControllers.patient_dashboard import PatientPortalFrame
 from MenuControllers.doctor_page import DoctorPortalFrame
