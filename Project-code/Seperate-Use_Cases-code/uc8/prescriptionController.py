@@ -94,7 +94,7 @@ class PrescriptionController:
 
     def selectPrescription(self, prescription_id):
         self.selected_prescription_id = prescription_id
-        current_prescription = next((p for p in self.prescriptions if p.get('prescription_id') == prescription_id), None)
+        current_prescription = self.get_current_prescription()
         if current_prescription:
             self.processed_drugs = []
             self.displayPrescription(current_prescription)
@@ -106,7 +106,6 @@ class PrescriptionController:
             widget.destroy()
         self.current_screen = DrugScreen(self.root, controller=self, prescription_data=current_prescription)
         
-
     def getDrug(self, drug):
         med_id = drug.get('id')
     
@@ -114,40 +113,53 @@ class PrescriptionController:
             self.processed_drugs.append(med_id)
             self.displayMedicineQuantityScreen(drug)
 
-
     def displayMedicineQuantityScreen(self, drug):
         self.current_screen = MedicineQuantityScreen(self.root, controller=self, drug_data=drug)
+
+    def get_current_prescription(self):
+        return next((p for p in self.prescriptions if p.get('prescription_id') == self.selected_prescription_id), None)
+
+    def get_current_stock(self, med_id):
+        inv = InvMedReader("medicines.csv")
+        return inv.searchQuantity(med_id), inv
+
+    def check_stock_sufficient(self, current_stock, quantity_requested):
+        return current_stock >= quantity_requested
+
+    def update_stock_inventory(self, inv, med_id, current_stock, quantity_requested):
+        new_stock = current_stock - quantity_requested
+        inv.updateInventory(med_id, new_stock)
+
+    def check_and_update_prescription_status(self, current_prescription):
+        if not current_prescription:
+            return
+
+        total_medicines = len(current_prescription.get('medicines', []))
         
+        if len(self.processed_drugs) == total_medicines:
+            messagebox.showinfo("Prescription Completed!", "All medicines in this prescription have been successfully processed.")
+            self.displayPrescriptions() 
+        else:
+            self.displayPrescription(current_prescription)
+
     def submitDrugQuantity(self, drug, quantity_requested):
         med_id = drug.get('id')
         med_name = drug.get('name')
-        
     
-        inv = InvMedReader("medicines.csv")
-        current_stock = inv.searchQuantity(med_id)
-        
-        if current_stock >= quantity_requested:
-            new_stock = current_stock - quantity_requested
-            inv.updateInventory(med_id, new_stock)
-            
+        current_stock, inv = self.get_current_stock(med_id)
+        current_prescription = self.get_current_prescription()
+    
+        if self.check_stock_sufficient(current_stock, quantity_requested):
+            self.update_stock_inventory(inv, med_id, current_stock, quantity_requested)
             messagebox.showinfo("Success!", f"Successfully processed {quantity_requested} unit(s) of {med_name}.")
             
-            current_prescription = next((p for p in self.prescriptions if p.get('prescription_id') == self.selected_prescription_id), None)
-            if current_prescription:
-                total_medicines = len(current_prescription.get('medicines', []))
-                
-                if len(self.processed_drugs) == total_medicines:
-                    messagebox.showinfo("Prescription Completed!", "All medicines in this prescription have been successfully processed.")
-                    self.displayPrescriptions()
-                else:
-                    self.displayPrescription(current_prescription)
+            self.check_and_update_prescription_status(current_prescription)
         else:
             messagebox.showerror("Stock Error!", "Not enough stock.Try again...")
             
             if med_id in self.processed_drugs:
                 self.processed_drugs.remove(med_id)
-            
-            current_prescription = next((p for p in self.prescriptions if p.get('prescription_id') == self.selected_prescription_id), None)
+        
             if current_prescription:
                 self.displayPrescription(current_prescription)
 
@@ -155,6 +167,6 @@ class PrescriptionController:
         if med_id in self.processed_drugs:
             self.processed_drugs.remove(med_id)
             
-        current_prescription = next((p for p in self.prescriptions if p.get('prescription_id') == self.selected_prescription_id), None)
+        current_prescription = self.get_current_prescription()
         if current_prescription:
             self.displayPrescription(current_prescription)
