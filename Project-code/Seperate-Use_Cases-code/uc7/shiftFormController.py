@@ -1,6 +1,6 @@
 from shiftRegScreen import ShiftRegScreen
-from MenuControllers.Reader.readerHandlers import HospitalStaffReader
-from MenuControllers.Reader.readerHandlers import ShiftReader
+from readerHandlers import HospitalStaffReader
+from readerHandlers import ShiftReader
 from datetime import datetime
 import tkinter as tk
 from tkinter import messagebox
@@ -89,8 +89,8 @@ class ShiftFormController:
                         return False
                         continue
 
-                    #Έλεγχος για πάνω από 2 Βάρδιες
-                    if len(shifts_today) >= 2:
+                    #Έλεγχος για πάνω από 1 Βάρδιες
+                    if len(shifts_today) >= 1:
                         messagebox.showwarning("Warning, illegal action!", "The Staff Member already has two Shifts the same day.")
                         return False
 
@@ -113,6 +113,11 @@ class ShiftFormController:
                 messagebox.showwarning("Warning!", f"Unexpected start time for {self.type_shift} shift. Expected {expected['start']}.")
                 return False
 
+            if self.time_begin == self.time_end:
+                messagebox.showwarning("Warning!", "Invalid Working hours.")
+                return False
+
+
         try:
             format_str = "%H:%M"
             start = datetime.strptime(self.time_begin, format_str)
@@ -123,8 +128,8 @@ class ShiftFormController:
             else:
                 shift_duration = (end - start).total_seconds() / 3600
 
-            #Έλεγχος για τύρηση εργασίας λιγότερο των 11 ωρών/μέρα
-            if shift_duration > 11:
+            #Έλεγχος για τύρηση εργασίας λιγότερο των 8 ωρών/μέρα
+            if shift_duration > 8:
                 messagebox.showerror("Warning!", "The duration of the shift cannot exceed 11 hours.")
                 return False
             return True
