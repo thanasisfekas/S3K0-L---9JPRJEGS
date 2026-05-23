@@ -21,7 +21,6 @@ class Patient:
             item_info = patients[patients["patient_id"] == patient.strip()]
             return  item_info if not item_info.empty else None 
 
-
     def savePatient(self,patient):
         fields = ["patient_id","first_name","last_name","gender","date_of_birth","contact_number","address","registration_date","insurance_provider","insurance_number","email","password"]
 
