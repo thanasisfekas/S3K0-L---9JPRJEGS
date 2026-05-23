@@ -27,13 +27,14 @@ class SearchResultScreen(ctk.CTkFrame):
             corner_radius=10
         )
         self.result_container = ctk.CTkFrame(self, fg_color="transparent")
-        
+
     def display(self)->None:
         self.search_controller.searchScreen.pack_forget()
         self.pack(fill="both", expand=True)
         self.result_lb.pack(pady=(40, 20))
         self.result_container.pack(fill="x", padx=100)
 
+    # helper func
     def destroy_chld(self):
         for child in self.result_container.winfo_children():
             child.destroy()
@@ -80,7 +81,8 @@ class SearchResultScreen(ctk.CTkFrame):
                                         command=lambda data: self.on_click(data,self.equip_table)
             )
             self.equip_table.pack(expand=True, fill="both", padx=20, pady=20)
-    
+
+    # on click event command
     def on_click(self , data , table):
         row = data["row"]
         if row ==0:
@@ -131,6 +133,7 @@ class InvSearchScreen(ctk.CTkFrame):
         self.search_results.pack(fill="both", expand=True, padx=100, pady=20)
         self.search_btn.pack(side="right")
 
+    # helper func
     def destroy_chld(self):
         for child in self.search_results.winfo_children():
             child.destroy()
@@ -264,9 +267,12 @@ class SuccessScreen:
 
     def showSuccMsg(self)->None:
         messagebox.showinfo("",self.msg)
+
 class OrderConfirmationScreen:
     def __init__(self,msg):
         self.succ_msg = msg
     
     def displayConfirmationMessage(self):
         messagebox.showwarning("",self.succ_msg)
+
+# conf,succ,... screens combine

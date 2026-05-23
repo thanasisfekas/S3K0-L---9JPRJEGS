@@ -2,11 +2,12 @@
 import sys
 import os
 import csv
+from datetime import datetime
 from tkinter import messagebox
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from screens import PatientAdmissionReqScreen,PatientSearchScreen,TransferPatientScreen,PatientRegScreen
+from screens import PatientAdmissionReqScreen,PatientSearchScreen,TransferPatientScreen,PatientRegScreen,AcceptScreen
 
-from MenuControllers.Reader.readerHandlers import WardReader
+from MenuControllers.Reader.readerHandlers import WardReader,LabTestRequestReader,PatientFolderReader
 from models import Patient
 
 class PatientAdmissReqController:
@@ -16,15 +17,28 @@ class PatientAdmissReqController:
         self.patientAdmReqScrn = PatientAdmissionReqScreen(self.parent,self.patient,self)
 
     # missing doctor 
-    def createLabTestReq(self):
-        # self.labReqReader = LabTestRequestReader("../Seperate-Use__Cases-code/uc5/lab_test_requests.csv")
-        # self.labReqReader.submitLabtest()
-        print("create and subm lab test req")
+    def createLabTestReq(self,entries):
+        # fixed doctor id. with login pass here the doctor id
+        self.doc = 'D007'
+        self.labReqReader = LabTestRequestReader("../Seperate-Use_Cases-code/uc5/lab_test_requests.csv")
+        target =self.patient["patient_id"].iloc[0]
+        folders = PatientFolderReader("../Seperate-Use_Cases-code/uc5/patient_medical_folders.csv").data
+        self.acceptScreen = AcceptScreen( "Submit Lab Test Request")
+        res = self.acceptScreen.displayConfirmMsg()
+        if res:
 
-    # def finalizePatientForm(self):
-    #     self.patientInfoScreen = PatientInfoScreen(self)
-    #     messagebox.showinfo("","completed admission")
-
+            self.labReqReader.submitLabtest({
+                                            "request_id": self.labReqReader.generate_req_id(),
+                                            "patient_id":target ,
+                                            "folder_id":folders[folders["patient_id"]== target]["folder_id"].iloc[0],
+                                            "doctor_id":self.doc, 
+                                            "test_name":entries["Test Name"].get(),
+                                            "reason":entries["Reason"].get(),
+                                            "status": 'Pending',
+                                            "request_date": datetime.now().strftime("%Y-%-m-%-d")
+            })
+        else:
+            messagebox.showwarning("","No Lab Test submitted")
 
 class TransferPatientController:
     def __init__(self,patient_data,parent):
@@ -51,7 +65,7 @@ class TransferPatientController:
                     writer.writerow(row)
             os.replace('temp.csv','hospitalizations.csv')
         
-        messagebox.showinfo("","treatment trasnfer completed")
+        messagebox.showinfo("","Trasnfer completed")
 
 class PatientSearchController:
     def __init__(self,parent):
@@ -61,19 +75,17 @@ class PatientSearchController:
         self.searchScreen = PatientSearchScreen(parent,self)
         self.searchScreen.display()
         self.searchScreen.displayPatientList()
-    #     self.SearchResultScreen = SearchResultScreen(self.parent,self)
-    #     self.OrderController = OrderController(self.parent)
 
     def setPatient(self):
         self.searched_patient = self.searchScreen.entry_search.get()
         self.patient_res = self.patient.retreivePatientDetails(self.searched_patient)
 
         if self.patient_res is None:
-            messagebox.showinfo("","Item not Found")
+            messagebox.showinfo("","Patient not Found")
             self.searchScreen.pack_forget()
             self.patientRegController = PatientRegController(self.parent,self)
         else :
-            messagebox.showinfo("","Item Found")
+            messagebox.showinfo("","Patient Found")
             if self.patient.checkPatientStatus(self.patient_res):
                 self.searchScreen.pack_forget()
                 self.transfer_Patient_Controller = TransferPatientController(self.patient_res,self.parent)
@@ -90,8 +102,6 @@ class PatientRegController:
 
     def getPatientRegFormDetails(self):
         self.patient = Patient().savePatient(self.patientRegScreen.formDetails)
-
-
 
 class DoctorMainMenuController:
     def __init__(self,parent):

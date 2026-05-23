@@ -1,5 +1,6 @@
 from .file_reader import File_reader
 import pandas as pd
+import csv
 
 class DocReader(File_reader):
     def __init__(self, file: str)->None:
@@ -664,29 +665,43 @@ class LabTestRequestReader(File_reader):
     def __init__(self, file:str):
         super().__init__(file)
 
-        def getReqId(self) ->pd.Series:
-            return self.data.iloc[:,0]
+    def getReqId(self) ->pd.Series:
+        return self.data.iloc[:,0]
     
-        def getReqPatientId(self) ->pd.Series:
-            return self.data.iloc[:,1]
+    def getReqPatientId(self) ->pd.Series:
+        return self.data.iloc[:,1]
     
-        def getFolderId(self) ->pd.Series:
-            return self.data.iloc[:,2]
-        
-        def getReqDocId(self) ->pd.Series:
-            return self.data.iloc[:,2]
+    def getFolderId(self) ->pd.Series:
+        return self.data.iloc[:,2]
+    
+    def getReqDocId(self) ->pd.Series:
+        return self.data.iloc[:,2]
                                   
-        def getTestName(self) ->pd.Series:
-            return self.data.iloc[:,3]
+    def getTestName(self) ->pd.Series:
+        return self.data.iloc[:,3]
         
-        def getReqReason(self) ->pd.Series:
-            return self.data.iloc[:,4]
+    def getReqReason(self) ->pd.Series:
+        return self.data.iloc[:,4]
         
-        def getReqStatus(self) ->pd.Series:
-            return self.data.iloc[:,5]
+    def getReqStatus(self) ->pd.Series:
+        return self.data.iloc[:,5]
         
-        def getReqDate(self) ->pd.Series:
-            return self.data.iloc[:,6]
+    def getReqDate(self) ->pd.Series:
+        return self.data.iloc[:,6]
         
-        # def submitLabtest(self,req):
-        #     pass
+    def submitLabtest(self,req):
+        with open(self.file, 'a', newline='') as file:
+            writer = csv.DictWriter(file,fieldnames=["request_id","patient_id","folder_id","doctor_id","test_name","reason","status","request_date"])
+            writer.writerow(req)
+
+    def generate_req_id(self):
+        with open(self.file , 'r' , newline='') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                id = row["request_id"]
+            new_id = f"LTR{int(id.lstrip('LTR')) + 1:03d}"
+        return new_id
+
+class PatientFolderReader(File_reader):
+    def __init__(self, file):
+        super().__init__(file)

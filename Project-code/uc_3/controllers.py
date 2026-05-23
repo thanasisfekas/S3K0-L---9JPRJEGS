@@ -10,8 +10,6 @@ from uc_3.screens import InvSearchScreen,SearchResultScreen,MessageScreen,OrderS
 class InvMgMainMenuController:
     def __init__(self,parent):
         self.parent = parent
-
-        # init inventory search controller
         self.searchController = InvSearchController(self.parent)
 
 class InvSearchController:
@@ -22,20 +20,24 @@ class InvSearchController:
         self.searchScreen = InvSearchScreen(self.parent,self)
         self.searchScreen.display()
         self.searchScreen.showResults()
-        self.SearchResultScreen = SearchResultScreen(self.parent,self)
-        self.OrderController = OrderController(self.parent,self)
 
+    # get user input(item id) from search screen
     def getInvItem(self):
         self.searched_item = self.searchScreen.search_entry.get()
+        # seach requested item
         self.res = self.inventory.searchInvItem(self.searched_item)
 
+        # alt 2 check if searched patient exists
         if self.res is None:
-            messageScreen = MessageScreen(self.parent)
-            messageScreen.dispError("No Item Found")
+            #alternative
+            messageScreen = MessageScreen("No Item Found")
+            messageScreen.dispError()
         else :
-            # messagebox.showinfo("","Item Found")
+            # main flow
+            self.SearchResultScreen = SearchResultScreen(self.parent,self)
             self.SearchResultScreen.display()
             self.SearchResultScreen.displayResults(self.res)
+            self.OrderController = OrderController(self.parent,self)
 
 class OrderController:
     def __init__(self,parent,controller):
@@ -48,22 +50,27 @@ class OrderController:
         self.data = data
         self.orderScreen.showOrderForm(self.data)
 
+    # on click event for submit button in order screen
     def setFormDetails(self):
         self.order_amount = self.orderScreen.orderAmountMenu.get()
         self.more_info = self.orderScreen.displayBox.get("1.0", "end-1c")
         self.checkFormIntegrity()
 
     def checkFormIntegrity(self):
+        # alt 1 check if amount of the item is missing
         if not self.order_amount:
+            #alternative flow
             messageScreen = MessageScreen("Form is not filled")
             messageScreen.dispError()
         else:
+            # main flow
             self.order = Order(self.data , self.order_amount , self.more_info)
             self.conf_screen = OrderConfirmationScreen("Submit Order ?")
             self.conf_screen.displayConfirmationMessage()
             self.orderLog.submitOrder(self.order.getOrder())
             self.successScreen = SuccessScreen("Order Submitted to OrderLog")
             self.successScreen.showSuccMsg()
+            
             # return to search screen after submit
             self.orderScreen.pack_forget()
             self.search_controller.SearchResultScreen.pack_forget()

@@ -240,6 +240,7 @@ class PatientAdmissionReqScreen(ctk.CTkFrame):
         self.patient_adm_lb.pack(anchor="center",pady=10)
         self.pack(fill="both", expand=True)
         self.frame.pack(fill="x", padx=100)
+        self.entries = {}
         
         
         patient_text = {"header" : "Patient Personal Info",
@@ -262,24 +263,38 @@ class PatientAdmissionReqScreen(ctk.CTkFrame):
                           ]
         }
 
+        req_text = {"header" : "Request Info",
+                          "info" :[
+                           ("Test Name",""),
+                            ("Reason" , "")
+                          ]
+        }
+
         self.patient_info_frame = ctk.CTkFrame(self.frame, fg_color=CARD_WHITE,corner_radius=10)
         self.patient_info_lb = ctk.CTkLabel(self.patient_info_frame, text = patient_text["header"] ,font=ctk.CTkFont(size=10, weight="bold"))
         self.patient_info_lb.grid(row = 0 , column = 0, columnspan=2,sticky="w")
         self.patient_info_frame.pack(fill="x",pady=(0,15))
 
-        self.displayPatientDetails(patient_text,self.patient_info_frame)        
+        self.displayDetails(patient_text,self.patient_info_frame)        
 
         self.patient_insurance_frame = ctk.CTkFrame(self.frame, fg_color=CARD_WHITE,corner_radius=10)
         self.patient_insurance_info_lb = ctk.CTkLabel(self.patient_insurance_frame, text = insurance_text["header"] ,font=ctk.CTkFont(size=10, weight="bold"))
         self.patient_insurance_info_lb.grid(row = 0 , column = 0, columnspan=2,sticky="w")
         self.patient_insurance_frame.pack(fill="x",pady=(0,15))
 
-        self.displayPatientDetails(insurance_text,self.patient_insurance_frame)
+        self.displayDetails(insurance_text,self.patient_insurance_frame)
 
-        self.create_req_btn = ctk.CTkButton(self.frame,text="Create Request",command=self.controller.createLabTestReq ,corner_radius=10)
+        self.req_frame = ctk.CTkFrame(self.frame, fg_color=CARD_WHITE,corner_radius=10)
+        self.req_info_lb = ctk.CTkLabel(self.req_frame, text = req_text["header"] ,font=ctk.CTkFont(size=10, weight="bold"))
+        self.req_info_lb.grid(row = 0 , column = 0, columnspan=2,sticky="w")
+        self.req_frame.pack(fill="x",pady=(0,15))
+
+        self.displayReqDetails(req_text,self.req_frame)
+
+        self.create_req_btn = ctk.CTkButton(self.frame,text="Create Request",command=lambda : self.controller.createLabTestReq(self.entries) ,corner_radius=10)
         self.create_req_btn.pack(pady=10)
 
-    def displayPatientDetails(self,text,frame):
+    def displayDetails(self,text,frame):
         row =1
         for idx,(lb_text,value_text) in enumerate(text["info"]):
             row += idx
@@ -288,3 +303,21 @@ class PatientAdmissionReqScreen(ctk.CTkFrame):
 
             lb_text = ctk.CTkLabel(frame, text=value_text, font=ctk.CTkFont(size=14, weight="normal"), text_color="#1E293B")
             lb_text.grid(row=row, column= 1, padx=(0, 30), pady=6, sticky="w")        
+
+    def displayReqDetails(self,text,frame):
+        row =1
+        for idx,(lb_text,_) in enumerate(text["info"]):
+            row += idx
+            lb_title = ctk.CTkLabel(frame,text=lb_text, font=ctk.CTkFont(size=10, weight="bold"), text_color=TEXT_MUTE)
+            lb_title.grid(row=row,column=0,padx=(20, 10), pady=6, sticky="w")
+
+            entry = ctk.CTkEntry(frame, font=ctk.CTkFont(size=14, weight="normal"), text_color="#1E293B")
+            entry.grid(row=row, column= 1, padx=(0, 30), pady=6, sticky="w")        
+            self.entries[lb_text] = entry
+
+class AcceptScreen:
+    def __init__(self,msg):
+        self.msg = msg
+
+    def displayConfirmMsg(self):
+        return messagebox.askyesno("",self.msg)
