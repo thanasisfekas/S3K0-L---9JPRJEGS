@@ -1,7 +1,8 @@
-from MenuControllers.Reader.readerHandlers import PrescriptionsReader, MedReader, DocReader, InvMedReader
+from readerHandlers import PrescriptionsReader, MedReader, DocReader, InvMedReader
 from prescriptionsScreen import PrescriptionsScreen   
 from drugScreen import DrugScreen
 from medicineQuantityScreen import MedicineQuantityScreen
+from messageScreens import PrescriptionSearchFailureScreen, DrugShortageScreen, SuccessScreen
 
 import tkinter as tk
 from tkinter import messagebox
@@ -53,7 +54,7 @@ class PrescriptionController:
             self.mapDoctor()
             self.displayPrescriptions()  
         else:
-            messagebox.showerror("Error!", "There aren't any prescriptions for this patient \nTry again...")
+            PrescriptionSearchFailureScreen()
             self.returnToSearchScreen()  
 
     def mapMedicine(self):
@@ -137,7 +138,7 @@ class PrescriptionController:
         total_medicines = len(current_prescription.get('medicines', []))
         
         if len(self.processed_drugs) == total_medicines:
-            messagebox.showinfo("Prescription Completed!", "All medicines in this prescription have been successfully processed.")
+            SuccessScreen()
             self.displayPrescriptions() 
         else:
             self.displayPrescription(current_prescription)
@@ -155,7 +156,7 @@ class PrescriptionController:
             
             self.check_and_update_prescription_status(current_prescription)
         else:
-            messagebox.showerror("Stock Error!", "Not enough stock.Try again...")
+            DrugShortageScreen("Not enough stock.")
             
             if med_id in self.processed_drugs:
                 self.processed_drugs.remove(med_id)
