@@ -10,7 +10,7 @@ from MenuControllers.Reader.readerHandlers import PatientReader
 
 class PatientHandler:
     def __init__(self):
-        self.patients = pd.DataFrame({"Patients": [PatientReader("../Data/patients.csv").data]})
+        self.patients = pd.DataFrame({"Patients": [PatientReader("./Data/patients.csv").data]})
 
     def getAvailablePatients(self):
         return self.patients
@@ -24,20 +24,20 @@ class PatientHandler:
     def savePatient(self,patient):
         fields = ["patient_id","first_name","last_name","gender","date_of_birth","contact_number","address","registration_date","insurance_provider","insurance_number","email","password"]
 
-        with open("../Data/patients.csv" , 'r' , newline='') as file:
+        with open("./Data/patients.csv" , 'r' , newline='') as file:
             reader = csv.DictReader(file)
             for row in reader:
                 id = row["patient_id"]
             new_id = f"P{int(id.lstrip('P')) + 1:03d}"
 
-        with open("../Data/patients.csv" , 'a' , newline='') as file:
+        with open("./Data/patients.csv" , 'a' , newline='') as file:
             writer = csv.DictWriter(file, fieldnames=fields)
             writer.writerow({"patient_id" : new_id} | patient)
 
 
     def checkPatientStatus(self,patient):
         found = False
-        with open("hospitalizations.csv" ,'r',newline='') as file:
+        with open("./Data/hospitalizations.csv" ,'r',newline='') as file:
             reader = csv.DictReader(file)
             for row in reader:
                 if str(patient.iloc[0,0]) == row["patient_id"] and row["status"] == "Admitted" and not found: 

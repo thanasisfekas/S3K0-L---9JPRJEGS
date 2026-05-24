@@ -288,7 +288,7 @@ class PatientInfoScreen(ctk.CTkFrame):
         if self.controller.checkFormInfo():
             self.confAdmissionScreen =AcceptScreen("Confirm Admission ? ")
             self.confAdmissionScreen.displayConfirmMsg()
-            self.patientAdmissionReader = PatientAdmissionReader("patient_Admission.csv")
+            self.patientAdmissionReader = PatientAdmissionReader("./Data/patient_Admission.csv")
             self.patientAdmissionReader.submitAdmission({
                                             "admission_id": self.patientAdmissionReader.generate_adm_id(),
                                             "patient_id":self.patient["patient_id"].iloc[0],
@@ -320,7 +320,6 @@ class PatientAdmissionReqScreen(ctk.CTkFrame):
         self.pack(fill="both", expand=True)
         self.frame.pack(fill="x", padx=100)
         self.entries = {}
-        
         
         patient_text = {"header" : "Patient Personal Info",
                         "info": [

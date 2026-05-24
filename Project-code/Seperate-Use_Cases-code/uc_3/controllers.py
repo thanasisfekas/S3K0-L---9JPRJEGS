@@ -15,7 +15,7 @@ class InvMgMainMenuController:
 class InvSearchController:
     def __init__(self,parent):
         self.parent = parent
-        self.inventory = Inventory(pd.DataFrame({"Medicines": [MedReader("../Data/medicines.csv").data] , "Equipment": [EquipReader("../Data/equipment.csv").data]}))
+        self.inventory = Inventory(pd.DataFrame({"Medicines": [MedReader("./Data/medicines.csv").data] , "Equipment": [EquipReader("./Data/equipment.csv").data]}))
         self.available_inv = self.inventory.inventory
         self.searchScreen = InvSearchScreen(self.parent,self)
         self.searchScreen.display()
@@ -44,7 +44,7 @@ class OrderController:
         self.parent = parent
         self.search_controller= controller
         self.orderScreen = OrderScreen(self.parent,self)
-        self.orderLog = OrderLog("order_log.csv")
+        self.orderLog = OrderLog("./Data/order_log.csv")
 
     def startOrder(self,data):
         self.data = data
