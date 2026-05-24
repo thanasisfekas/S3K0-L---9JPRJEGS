@@ -1,6 +1,7 @@
 from shiftRegScreen import ShiftRegScreen
 from readerHandlers import HospitalStaffReader
 from readerHandlers import ShiftReader
+from messageScreens import ShiftAvailabilityFailureScreen, ShiftBoundariesFailureScreen, SuccessRegistrationShiftScreen
 from datetime import datetime
 import tkinter as tk
 from tkinter import messagebox
@@ -63,7 +64,7 @@ class ShiftFormController:
         if self.checkAvailability():
             create_shift = ShiftReader("scheduledShifts.csv")
             create_shift.save_shift(self.id, self.name, self.surname, self.date, self.time_begin, self.time_end)
-            messagebox.showinfo("Success!", "Shift registered successfully!")
+            SuccessRegistrationShiftScreen()            
             time.sleep(1)
             self.displaySearchScreen()
         return 
@@ -85,23 +86,23 @@ class ShiftFormController:
                   
                     #Έλεγχος για ρεπό
                     if  shift_time_begin == "OFF" or shift_time_end == "OFF":
-                        messagebox.showwarning("Warning, illegal action!", "The Staff member has declared leave.")
+                        ShiftAvailabilityFailureScreen("The Staff member has declared leave.")
                         return False
                         continue
 
                     #Έλεγχος για πάνω από 1 Βάρδιες
                     if len(shifts_today) >= 1:
-                        messagebox.showwarning("Warning, illegal action!", "The Staff Member already has two Shifts the same day.")
+                        ShiftAvailabilityFailureScreen("The Staff Member already has two Shifts the same day.")
                         return False
 
                     #Έλεγχος για ακριβώς την ίδια Βάρδια
                     if (shift_time_begin == self.time_begin and shift_time_end == self.time_end):
-                        messagebox.showwarning("Warning!", "This shift is already registered.")
+                        ShiftAvailabilityFailureScreen("This shift is already registered.")
                         return False
 
                     #Έλεγχος για επικάλυψη άλλης Βάρδιας
                     if self.time_begin < shift_time_end and self.time_end > shift_time_begin:
-                        messagebox.showwarning("Warning, shift Overlap!", "Conflict detected: Time overlap with an existing shift.")
+                        ShiftAvailabilityFailureScreen("Conflict detected: Time overlap with an existing shift.")
                         return False
         return True
 
@@ -110,11 +111,11 @@ class ShiftFormController:
         if self.type_shift in self.boundaries:
             expected = self.boundaries[self.type_shift]
             if self.time_begin != expected["start"]:
-                messagebox.showwarning("Warning!", f"Unexpected start time for {self.type_shift} shift. Expected {expected['start']}.")
+                ShiftBoundariesFailureScreen(f"Unexpected start time for {self.type_shift} shift. Expected {expected['start']}.")
                 return False
 
             if self.time_begin == self.time_end:
-                messagebox.showwarning("Warning!", "Invalid Working hours.")
+                ShiftBoundariesFailureScreen( "Invalid Working hours. Cannot insert 0 or 24 hours of Shift")
                 return False
 
 

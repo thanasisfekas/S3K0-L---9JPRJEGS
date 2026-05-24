@@ -1,8 +1,9 @@
 from memberSearchScreen import MemberSearchScreen
-from MenuControllers.Reader.readerHandlers import HospitalStaffReader
+from readerHandlers import HospitalStaffReader
 from memberResultSearchScreen import MemberResultSearchScreen
 from memberDetailsScreen import MemberDetailsScreen
 from shiftFormController import ShiftFormController
+from messageScreens import NotFoundMemberScreen
 import tkinter as tk
 from tkinter import messagebox
 
@@ -31,30 +32,31 @@ class MemberSearchController:
             return False, None , None
 
 
-    def searchMember(self):
+    def handle_search_results(self, results):
+        if results:
+            self.displaySearchResults(results)
+        else:
+           NotFoundMemberScreen()
+
+    def searchMember(self): 
         flag = False
         name = None
         surname = None 
 
-        input = self.current_screen.getInput()
+        user_input = self.current_screen.getInput()
 
-        if not input:
+        if not user_input:
             messagebox.showwarning("Warning!", "Enter Name and Surname.")
             return None
 
-        flag, name, surname = self.checkInput(input)
+        flag, name, surname = self.checkInput(user_input)
 
-        if flag :
+        if flag:
             results = self.HospitalStaff.find_by_name_surname(name, surname)
-            if results:
-                self.displaySearchResults(results)
-
-            else:
-                messagebox.showinfo("Warning!", "Staff Member not found. \n Try again...")   
+            self.handle_search_results(results)
         else:
             messagebox.showerror("Error!", "Non valid data.")
-        
-            
+
 
     def displaySearchResults(self, results):
         for widget in self.root.winfo_children():
