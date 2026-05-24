@@ -1,0 +1,6 @@
+hospitalization_id,patient_id,status,ward,admission_date,discharge_date,attending_doctor_id
+H001,P001,Admitted,Emergency,2023-04-09,,D007
+H002,P003,Outpatient,Emergency,2023-08-16,2023-08-16,D002
+H003,P005,Discharged,Physiotherapy,2023-01-13,2023-01-20,D003
+H004,P010,Admitted,Pediatrics B,2023-09-28,,D006
+H005,P029,Follow-up,Pediatrics A,2023-11-16,2023-11-16,D003
