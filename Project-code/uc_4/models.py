@@ -8,7 +8,7 @@ import re
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from MenuControllers.Reader.readerHandlers import PatientReader
 
-class Patient:
+class PatientHandler:
     def __init__(self):
         self.patients = pd.DataFrame({"Patients": [PatientReader("../Data/patients.csv").data]})
 
@@ -41,7 +41,6 @@ class Patient:
             reader = csv.DictReader(file)
             for row in reader:
                 if str(patient.iloc[0,0]) == row["patient_id"] and row["status"] == "Admitted" and not found: 
-                    print("patient hasve been admitted")
                     return True
                 else:
                     return False

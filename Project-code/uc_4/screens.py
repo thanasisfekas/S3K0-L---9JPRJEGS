@@ -7,7 +7,7 @@ import customtkinter as ctk
 import sys
 import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
+from MenuControllers.Reader.readerHandlers import PatientAdmissionReader
 
 BG_COLOR = "#F8F9FA"
 CARD_WHITE = "#FFFFFF"
@@ -34,9 +34,12 @@ class PatientSearchScreen(ctk.CTkFrame):
         self.results.pack(fill="both", expand=True, padx=100, pady=20)
         self.search_btn.pack(side="right")
 
-    def displayPatientList(self):
+    def destroy_chld(self):
         for child in self.results.winfo_children():
             child.destroy()
+
+    def displayPatientList(self):
+        self.destroy_chld()
         
         patients = self.search_controller.available_patient["Patients"].loc[0]
 
@@ -216,14 +219,90 @@ class TransferPatientScreen(ctk.CTkFrame):
         self.controller.write_tranfer(self.controller.patient_data,self.table.get_row(idx))
     
 
-class PatientInfoScreen:
-    def __init__(self,controller):
+class PatientInfoScreen(ctk.CTkFrame):
+    def __init__(self,parent,controller,patient):
+        super().__init__(parent)
         self.controller= controller
-        # form elements
-        pass
-    
-    def on_click_event(self,data):
-        self.controller.checkFormInfo()
+        self.parent= parent
+        self.patient=patient
+        self.createForm()
+
+    def createForm(self):
+        self.controller.patientAdmReqScrn.pack_forget()
+        self.configure(fg_color=BG_COLOR)
+        self.pack(fill="both", expand=True)
+
+        self.frame = ctk.CTkFrame(self, fg_color="transparent")
+        self.frame.pack(fill="x", padx=100)
+
+        self.container = ctk.CTkFrame(self.frame, fg_color="transparent")
+        
+        self.patient_adm_lb = ctk.CTkLabel(self.frame, text="Patient Admission", font = ctk.CTkFont(size=22, weight="bold"),fg_color="#dbdbdb",corner_radius=10)
+
+        self.container.grid_columnconfigure(1,weight=1)
+
+        self.patient_id_lb = ctk.CTkLabel(self.container, text="Patient Id : ", font = ctk.CTkFont(size=14, weight="bold"),text_color=TEXT_MUTE,corner_radius=10)
+
+        self.patient_id_val_lb = ctk.CTkLabel(self.container, text=f"{self.patient["patient_id"].iloc[0]}", font = ctk.CTkFont(size=12, weight="bold"),corner_radius=10)
+
+        self.doc_id_lb = ctk.CTkLabel(self.container, text="Doctor Id : ", font = ctk.CTkFont(size=14, weight="bold"),text_color=TEXT_MUTE,corner_radius=10)
+
+        self.doc_entry = ctk.CTkEntry(self.container, placeholder_text="Enter Doctor Id")
+        # when we get the logged in doctor id
+        # self.doc_entry.insert(0,logged_in_doc)
+
+        self.reason = ctk.CTkLabel(self.container,text="Reason :" ,font = ctk.CTkFont(size=14, weight="bold"),text_color=TEXT_MUTE,corner_radius=10)
+
+        self.reason_text = ctk.CTkTextbox(self.container,                                        width=600 ,
+                                        height=100 ,
+                                        fg_color=BG_COLOR ,
+                                        text_color=TEXT_MUTE ,
+                                        border_width=3 )
+
+        self.status_lb = ctk.CTkLabel(self.container,text="Status :" ,font = ctk.CTkFont(size=14, weight="bold"),text_color=TEXT_MUTE,corner_radius=10)
+
+        self.status_drop = ctk.CTkOptionMenu(self.container,values=["Admitted","Pending","Discharged"])
+
+        self.date_ld = ctk.CTkLabel(self.container,text="Admission Date :" ,font = ctk.CTkFont(size=14, weight="bold"),text_color=TEXT_MUTE,corner_radius=10)
+
+        self.calendar = Calendar(self.container, selectmode = 'day',year = 2022, month = 5,day = 22,date_pattern='yyyy-mm-dd')
+
+        self.subm_btn = ctk.CTkButton(self.frame,text="Submit Admission" , font = ctk.CTkFont(size=14, weight="bold"),width=150, height=60 , corner_radius=10,command=self.on_click_event)
+        
+    def displayPatientAdmForm(self):
+        self.patient_adm_lb.pack(anchor="center",pady=10)
+        self.container.pack(fill="x",pady=10)
+        self.reason_text.grid(row=2, column=1,pady=10,padx=10,sticky="ew")
+        self.status_lb.grid(row=3, column=0,pady=10,padx=10,sticky="e")
+        self.status_drop.grid(row=3, column=1,pady=10,padx=10,sticky="w")
+        self.reason.grid(row=2, column=0,pady=10,padx=10,sticky="ne")
+        self.doc_entry.grid(row=1, column=1,pady=10,padx=10,sticky="ew")
+        self.doc_id_lb.grid(row=1, column=0,pady=10,padx=10,sticky="e")
+        self.patient_id_val_lb.grid(row=0, column=1,pady=10,padx=10,sticky="w")
+        self.patient_id_lb.grid(row=0, column=0,pady=10,padx=10,sticky="e")
+        self.date_ld.grid(row=4, column=0,pady=10,padx=10,sticky="ne")
+        self.calendar.grid(row=4, column=1,padx=10, pady=10, sticky="w")
+        self.subm_btn.pack(anchor="center",pady=10)
+
+    def on_click_event(self):
+        if self.controller.checkFormInfo():
+            self.confAdmissionScreen =AcceptScreen("Confirm Admission ? ")
+            self.confAdmissionScreen.displayConfirmMsg()
+            self.patientAdmissionReader = PatientAdmissionReader("patient_Admission.csv")
+            self.patientAdmissionReader.submitAdmission({
+                                            "admission_id": self.patientAdmissionReader.generate_adm_id(),
+                                            "patient_id":self.patient["patient_id"].iloc[0],
+                                            "doctor_id":self.doc_entry.get().strip(), 
+                                            "reason": self.reason_text.get("1.0","end-1c").strip(),
+                                            "status" : self.status_drop.get(),
+                                            "admission_date": self.calendar.get_date()
+            })
+
+            MsgScreen().displayMsg("Admission Succesful")
+
+class MsgScreen:
+    def displayMsg(self,msg):
+        messagebox.showinfo("",msg)
 
 class PatientAdmissionReqScreen(ctk.CTkFrame):
     def __init__(self,parent,patient,controller):
@@ -263,13 +342,6 @@ class PatientAdmissionReqScreen(ctk.CTkFrame):
                           ]
         }
 
-        req_text = {"header" : "Request Info",
-                          "info" :[
-                           ("Test Name",""),
-                            ("Reason" , "")
-                          ]
-        }
-
         self.patient_info_frame = ctk.CTkFrame(self.frame, fg_color=CARD_WHITE,corner_radius=10)
         self.patient_info_lb = ctk.CTkLabel(self.patient_info_frame, text = patient_text["header"] ,font=ctk.CTkFont(size=10, weight="bold"))
         self.patient_info_lb.grid(row = 0 , column = 0, columnspan=2,sticky="w")
@@ -284,13 +356,6 @@ class PatientAdmissionReqScreen(ctk.CTkFrame):
 
         self.displayDetails(insurance_text,self.patient_insurance_frame)
 
-        self.req_frame = ctk.CTkFrame(self.frame, fg_color=CARD_WHITE,corner_radius=10)
-        self.req_info_lb = ctk.CTkLabel(self.req_frame, text = req_text["header"] ,font=ctk.CTkFont(size=10, weight="bold"))
-        self.req_info_lb.grid(row = 0 , column = 0, columnspan=2,sticky="w")
-        self.req_frame.pack(fill="x",pady=(0,15))
-
-        self.displayReqDetails(req_text,self.req_frame)
-
         self.create_req_btn = ctk.CTkButton(self.frame,text="Create Request",command=lambda : self.controller.createLabTestReq(self.entries) ,corner_radius=10)
         self.create_req_btn.pack(pady=10)
 
@@ -303,17 +368,6 @@ class PatientAdmissionReqScreen(ctk.CTkFrame):
 
             lb_text = ctk.CTkLabel(frame, text=value_text, font=ctk.CTkFont(size=14, weight="normal"), text_color="#1E293B")
             lb_text.grid(row=row, column= 1, padx=(0, 30), pady=6, sticky="w")        
-
-    def displayReqDetails(self,text,frame):
-        row =1
-        for idx,(lb_text,_) in enumerate(text["info"]):
-            row += idx
-            lb_title = ctk.CTkLabel(frame,text=lb_text, font=ctk.CTkFont(size=10, weight="bold"), text_color=TEXT_MUTE)
-            lb_title.grid(row=row,column=0,padx=(20, 10), pady=6, sticky="w")
-
-            entry = ctk.CTkEntry(frame, font=ctk.CTkFont(size=14, weight="normal"), text_color="#1E293B")
-            entry.grid(row=row, column= 1, padx=(0, 30), pady=6, sticky="w")        
-            self.entries[lb_text] = entry
 
 class AcceptScreen:
     def __init__(self,msg):

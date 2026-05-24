@@ -675,23 +675,17 @@ class LabTestRequestReader(File_reader):
         return self.data.iloc[:,2]
     
     def getReqDocId(self) ->pd.Series:
-        return self.data.iloc[:,2]
-                                  
-    def getTestName(self) ->pd.Series:
         return self.data.iloc[:,3]
         
-    def getReqReason(self) ->pd.Series:
+    def getReqStatus(self) ->pd.Series:
         return self.data.iloc[:,4]
         
-    def getReqStatus(self) ->pd.Series:
-        return self.data.iloc[:,5]
-        
     def getReqDate(self) ->pd.Series:
-        return self.data.iloc[:,6]
+        return self.data.iloc[:,5]
         
     def submitLabtest(self,req):
         with open(self.file, 'a', newline='') as file:
-            writer = csv.DictWriter(file,fieldnames=["request_id","patient_id","folder_id","doctor_id","test_name","reason","status","request_date"])
+            writer = csv.DictWriter(file,fieldnames=["request_id","patient_id","folder_id","doctor_id","status","request_date"])
             writer.writerow(req)
 
     def generate_req_id(self):
@@ -705,3 +699,21 @@ class LabTestRequestReader(File_reader):
 class PatientFolderReader(File_reader):
     def __init__(self, file):
         super().__init__(file)
+
+
+class PatientAdmissionReader(File_reader):
+    def __init__(self, file):
+        super().__init__(file)
+
+    def submitAdmission(self,admission):
+        with open(self.file, 'a', newline='') as file:
+            writer = csv.DictWriter(file,fieldnames=["admission_id","patient_id","doctor_id","reason","status","admission_date"])
+            writer.writerow(admission)
+
+    def generate_adm_id(self):
+        with open(self.file , 'r' , newline='') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                id = row["admission_id"]
+            new_id = f"ADM{int(id.lstrip('ADM')) + 1:03d}"
+        return new_id

@@ -1,0 +1,6 @@
+admission_id,patient_id,doctor_id,reason,status,admission_date
+ADM001,P001,D007,Acute Appendicitis,Admitted,2023-05-20
+ADM002,P003,D002,Severe Migraine,Discharged,2024-05-21
+ADM003,P005,D003,Fractured Femur,Admitted,2024-05-22
+ADM004,P010,D006,Pneumonia,Admitted,2025-05-23
+ADM005,P029,D003,Routine Monitoring,Discharged,2026-05-24
