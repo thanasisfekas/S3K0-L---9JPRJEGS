@@ -4,6 +4,7 @@ from MenuControllers.Reader.readerHandlers import PatientReader
 from prescriptionController import PrescriptionController
 from tkinter import messagebox
 import tkinter as tk
+from data_paths import data_path
 
 class SearchPatientController:
     def __init__(self, root):
@@ -31,7 +32,7 @@ class SearchPatientController:
             self.id = data['id']
             self.first_name, self.last_name = ([p for p in data.get('name', '').split() if len(p) >= 2] + ["", ""])[:2]
 
-            patient_inst = PatientReader("patients.csv")
+            patient_inst = PatientReader(data_path("uc8_patients.csv"))
             print(data)
             results = patient_inst.find_patient(self.id, self.first_name, self.last_name)
 

@@ -5,17 +5,16 @@ from pathlib import Path
 
 import pandas as pd
 
+from data_paths import data_path
+
 
 class PrescriptionRepository:
     def __init__(self):
-        self.shared_data_dir = Path("./Data")
-        self.uc_data_dir = Path("./Seperate-Use_Cases-code") / "uc6"
-        self.medical_record_data_dir = Path("./Seperate-Use_Cases-code") / "uc5"
-        self.patients_file = self.shared_data_dir / "patients.csv"
-        self.doctors_file = self.shared_data_dir / "doctors.csv"
-        self.folders_file = self.medical_record_data_dir / "patient_medical_folders.csv"
-        self.medicines_file = self.uc_data_dir / "medicines.csv"
-        self.prescription_logs_file = self.uc_data_dir / "prescription_logs.csv"
+        self.patients_file = data_path("patients.csv")
+        self.doctors_file = data_path("doctors.csv")
+        self.folders_file = data_path("patient_medical_folders.csv")
+        self.medicines_file = data_path("uc6_medicines.csv")
+        self.prescription_logs_file = data_path("prescription_logs.csv")
 
     def _read_csv(self, path):
         if not path.exists():

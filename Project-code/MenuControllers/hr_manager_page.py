@@ -11,6 +11,9 @@ UC7_DIR = Path(__file__).resolve().parents[1] / "Seperate-Use_Cases-code" / "uc7
 if str(UC7_DIR) not in sys.path:
     sys.path.insert(0, str(UC7_DIR))
 
+for module_name in ("readerHandlers", "file_reader", "messageScreens"):
+    sys.modules.pop(module_name, None)
+
 from memberSearchController import MemberSearchController
 
 BG_COLOR = "#F8F9FA"

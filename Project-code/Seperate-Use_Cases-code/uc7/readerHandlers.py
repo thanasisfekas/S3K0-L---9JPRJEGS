@@ -1,6 +1,7 @@
 from file_reader import File_reader
 import pandas as pd
 import os
+from data_paths import data_path
 
 class DocReader(File_reader):
     def __init__(self, file: str)->None:
@@ -315,17 +316,17 @@ class ShiftReader(File_reader):
             new_shift= {"id": [id], "first_name": [name],"last_name": [surname],"date": [date],"start": [time_begin],"end": [time_end]}
             new_df = pd.DataFrame(new_shift)
 
-            if os.path.exists("scheduledShifts.csv"):
+            if os.path.exists(self.file):
                 try:
-                    existing_df = pd.read_csv("scheduledShifts.csv")
+                    existing_df = pd.read_csv(self.file)
                     updated_df = pd.concat([existing_df, new_df], ignore_index=True)
-                    updated_df.to_csv("scheduledShifts.csv", index=False)
+                    updated_df.to_csv(self.file, index=False)
                     print(f"Shift appended successfully file.")
                 except Exception as e:
                     print(f"Error updating CSV file: {e}")
             else:
                 try:
-                    new_df.to_csv("scheduledShifts.csv", index=False)
+                    new_df.to_csv(self.file, index=False)
                     print(f"File created and shift saved successfully.")
                 except Exception as e:
                     print(f"Error creating CSV file: {e}")
@@ -333,9 +334,9 @@ class ShiftReader(File_reader):
 
 class HospitalStaffReader:
     def __init__(self):
-        self.DocReader = DocReader("doctors.csv")
-        self.NurseReader = NurseReader("nurses.csv")
-        self.ShiftReader = ShiftReader("scheduledShifts.csv")
+        self.DocReader = DocReader(data_path("uc7_doctors.csv"))
+        self.NurseReader = NurseReader(data_path("uc7_nurses.csv"))
+        self.ShiftReader = ShiftReader(data_path("uc7_scheduledShifts.csv"))
 
     def find_by_name_surname(self, name, surname):
 

@@ -5,6 +5,7 @@ from pathlib import Path
 from Bill_Issue.Screens.search_patient_screen import PatientSearchScreen
 from Bill_Issue.Screens.patient_details_screen import PatientDetailScreen
 from bill_issue_controller import BillController
+from data_paths import data_path
 
 class SearchChargesController:
     def __init__(self, root, csv_path):
@@ -86,13 +87,13 @@ class SearchChargesController:
         patient_prescriptions = []
         patient_treatments = []
 
-        parent_dir = Path.cwd().parent.parent
-
         # --- 1. Fetch and Merge Prescriptions ---
         try:
-            if os.path.join(parent_dir, "archive (1)", "prescriptions.csv") and os.path.join(parent_dir, "archive (1)", "medicines.csv"):
-                df_presc = pd.read_csv(os.path.join(parent_dir, "archive (1)", "prescriptions.csv"))
-                df_meds = pd.read_csv(os.path.join(parent_dir, "archive (1)", "medicines.csv"))
+            prescriptions_path = data_path("usecase9_prescriptions.csv")
+            medicines_path = data_path("usecase9_medicines.csv")
+            if prescriptions_path.exists() and medicines_path.exists():
+                df_presc = pd.read_csv(prescriptions_path)
+                df_meds = pd.read_csv(medicines_path)
 
                 # Filter prescriptions for this specific patient
                 df_patient_presc = df_presc[df_presc['patient_id'] == patient_id]
@@ -115,12 +116,14 @@ class SearchChargesController:
 
         # --- 2. Fetch and Map Treatments ---
         try:
-            if os.path.join(parent_dir, "archive (1)", "final_treatments.csv"):
-                df_treatments = pd.read_csv(os.path.join(parent_dir, "archive (1)", "final_treatments.csv"))
+            treatments_path = data_path("treatments.csv")
+            if treatments_path.exists():
+                df_treatments = pd.read_csv(treatments_path)
 
                 # If you have an appointments mapping file, merge through it
-                if os.path.exists('appointments.csv'):
-                    df_apps = pd.read_csv('appointments.csv')
+                appointments_path = data_path("appointments.csv")
+                if appointments_path.exists():
+                    df_apps = pd.read_csv(appointments_path)
                     df_patient_apps = df_apps[df_apps['patient_id'] == patient_id]
                     merged_treatments = df_treatments.merge(df_patient_apps, on='appointment_id', how='inner')
                 else:
@@ -229,12 +232,8 @@ if __name__ == "__main__":
     root.title("Hospital Billing System - Secretary Mode")
     root.geometry("600x800")
 
-    # Path to your patient CSV
-    parent_dir = Path.cwd().parent.parent
-    path = os.path.join(parent_dir, "archive (1)", "patients.csv")
-
     # Initialize the controller
-    controller = SearchChargesController(root, path)
+    controller = SearchChargesController(root, data_path("patients.csv"))
 
     # Start the application at the search screen
     controller.display_search_screen()

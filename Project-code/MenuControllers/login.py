@@ -4,34 +4,11 @@ from tkinter import messagebox
 import MenuControllers.recognizer as recognizer
 import pandas as pd
 import tkinter as tk
+from data_paths import data_path
 
 
 ctk.set_appearance_mode("light") 
 ctk.set_default_color_theme("blue")
-
-# #patients
-# patients = pd.read_csv('archive (1)/patients.csv')
-# patients_creds = patients[['email', 'password']]
-
-# #doctors
-# doctors = pd.read_csv('archive (1)/doctors.csv')
-# doctors_creds = doctors[['email', 'password']]
-
-# #inventory managers
-# inv_managers = pd.read_csv('archive (1)/inventory_managers.csv')
-# inv_managers_creds = inv_managers[['email', 'password']]
-
-# #HR managers
-# hr_managers = pd.read_csv('archive (1)/hr_managers.csv')
-# hr_managers_creds = hr_managers[['email', 'password']]
-
-# #pharmacists
-# pharmacists = pd.read_csv('archive (1)/pharmacists.csv')
-# pharmacists_creds = pharmacists[['email', 'password']]
-
-# #secretary
-# secretaries = pd.read_csv('archive (1)/secretaries.csv')
-# secretaries_creds = secretaries[['email', 'password']]
 
 
 class LoginFrame(ctk.CTkFrame):
@@ -136,23 +113,30 @@ class LoginFrame(ctk.CTkFrame):
         email = self.entry_user.get()
         password = self.entry_pass.get()
 
-        patients_creds = pd.DataFrame({"Email": readerHandlers.PatientReader("./Data/patients.csv").getPatientEmail(), "Password" : readerHandlers.PatientReader("./Data/patients.csv").getPatientPassword()})
-        patients = readerHandlers.File_reader("./Data/patients.csv").data
+        patients_path = data_path("patients.csv")
+        doctors_path = data_path("doctors.csv")
+        inv_managers_path = data_path("inventory_managers.csv")
+        pharmacists_path = data_path("pharmacists.csv")
+        hr_managers_path = data_path("hr_managers.csv")
+        secretaries_path = data_path("secretaries.csv")
 
-        doctors_creds = pd.DataFrame({"Email": readerHandlers.DocReader("./Data/doctors.csv").getDoctorEmail(), "Password" : readerHandlers.DocReader("./Data/doctors.csv").getDoctorPassword()})
-        doctors = readerHandlers.File_reader("./Data/doctors.csv").data
+        patients_creds = pd.DataFrame({"Email": readerHandlers.PatientReader(patients_path).getPatientEmail(), "Password" : readerHandlers.PatientReader(patients_path).getPatientPassword()})
+        patients = readerHandlers.File_reader(patients_path).data
 
-        inv_managers_creds= pd.DataFrame({"Email": readerHandlers.InvManagerReader("./Data/inventory_managers.csv").getInvManagerEmail(), "Password" : readerHandlers.InvManagerReader("./Data/inventory_managers.csv").getInvManagerPassword()})
-        inv_managers = readerHandlers.File_reader("./Data/inventory_managers.csv").data
+        doctors_creds = pd.DataFrame({"Email": readerHandlers.DocReader(doctors_path).getDoctorEmail(), "Password" : readerHandlers.DocReader(doctors_path).getDoctorPassword()})
+        doctors = readerHandlers.File_reader(doctors_path).data
 
-        pharmacists_creds = pd.DataFrame({"Email": readerHandlers.PharmacistReader("./Data/pharmacists.csv").getPharmacistEmail(), "Password" : readerHandlers.PharmacistReader("./Data/pharmacists.csv").getPharmacistPassword()})
-        pharmacists = readerHandlers.File_reader("./Data/pharmacists.csv").data
+        inv_managers_creds= pd.DataFrame({"Email": readerHandlers.InvManagerReader(inv_managers_path).getInvManagerEmail(), "Password" : readerHandlers.InvManagerReader(inv_managers_path).getInvManagerPassword()})
+        inv_managers = readerHandlers.File_reader(inv_managers_path).data
 
-        hr_managers_creds = pd.DataFrame({"Email": readerHandlers.HrManagerReader("./Data/hr_managers.csv").getHrManagerEmail(), "Password" : readerHandlers.HrManagerReader("./Data/hr_managers.csv").getHrManagerPassword()})
-        hr_managers = readerHandlers.File_reader("./Data/hr_managers.csv").data
+        pharmacists_creds = pd.DataFrame({"Email": readerHandlers.PharmacistReader(pharmacists_path).getPharmacistEmail(), "Password" : readerHandlers.PharmacistReader(pharmacists_path).getPharmacistPassword()})
+        pharmacists = readerHandlers.File_reader(pharmacists_path).data
 
-        secretaries_creds = pd.DataFrame({"Email": readerHandlers.SecretaryReader("./Data/secretaries.csv").getSecretaryEmail(), "Password" : readerHandlers.SecretaryReader("./Data/secretaries.csv").getSecretaryPassword()})
-        secretaries = readerHandlers.File_reader("./Data/secretaries.csv").data
+        hr_managers_creds = pd.DataFrame({"Email": readerHandlers.HrManagerReader(hr_managers_path).getHrManagerEmail(), "Password" : readerHandlers.HrManagerReader(hr_managers_path).getHrManagerPassword()})
+        hr_managers = readerHandlers.File_reader(hr_managers_path).data
+
+        secretaries_creds = pd.DataFrame({"Email": readerHandlers.SecretaryReader(secretaries_path).getSecretaryEmail(), "Password" : readerHandlers.SecretaryReader(secretaries_path).getSecretaryPassword()})
+        secretaries = readerHandlers.File_reader(secretaries_path).data
 
         if recognizer.is_patient(patients_creds, email, password) == 1 :
             user_name = self.authenticate(patients, email, password)

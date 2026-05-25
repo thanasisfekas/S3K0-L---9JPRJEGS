@@ -5,6 +5,7 @@ from tkinter import messagebox
 from Surgery_Appoint.Screens.surg_selec_doc_screen import SelectDoctorScreen
 from Surgery_Appoint.Screens.surgery_form_screen import SurgeryFormScreen
 from Surgery_Appoint.Screens.surgery_details_screen import SurgeryDetailScreen
+from data_paths import data_path
 
 
 class SurgerySearchController:
@@ -14,10 +15,8 @@ class SurgerySearchController:
 
         self.temp_assignments = {}
 
-        # Centralized file locations paths
-        parent_dir = Path.cwd().parent.parent
-        self.doctors_csv_path = os.path.join(parent_dir, "archive (1)", "doctors.csv")
-        self.requests_csv_path = os.path.join(parent_dir, "archive (1)", "surgery_requests.csv")
+        self.doctors_csv_path = data_path("doctors.csv")
+        self.requests_csv_path = data_path("surgery_requests.csv")
 
     def get_surgery_doctors(self, specialty):
         """ Pulls rows out of doctors.csv matching the requested specialty """
@@ -194,10 +193,8 @@ class SurgerySearchController:
         import pandas as pd
         from pathlib import Path
 
-        # Adjust directories to find your files cleanly
-        parent_dir = Path.cwd().parent.parent
-        shifts_path = os.path.join(parent_dir, "archive (1)", "scheduledShifts.csv")
-        nurses_path = os.path.join(parent_dir, "archive (1)", "nurses.csv")
+        shifts_path = data_path("scheduledShifts.csv")
+        nurses_path = data_path("nurses.csv")
 
         if not os.path.exists(shifts_path) or not os.path.exists(nurses_path):
             print(

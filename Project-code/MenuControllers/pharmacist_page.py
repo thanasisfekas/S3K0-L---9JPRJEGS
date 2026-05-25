@@ -11,6 +11,9 @@ UC8_DIR = Path(__file__).resolve().parents[1] / "Seperate-Use_Cases-code" / "uc8
 if str(UC8_DIR) not in sys.path:
     sys.path.insert(0, str(UC8_DIR))
 
+for module_name in ("readerHandlers", "file_reader", "messageScreens"):
+    sys.modules.pop(module_name, None)
+
 from searchPatientController import SearchPatientController
 
 BG_COLOR = "#F8F9FA"

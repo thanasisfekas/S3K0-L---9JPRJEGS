@@ -1,0 +1,11 @@
+request_id,patient_id,doctor_name,surgery_type,urgency,requested_date,status,doctors_needed,specialty_needed,assigned_operating_room,nurses_needed
+SR-101,P001,Dr. David Taylor,Melanoma Excision,High,2026-06-01,Pending,1,Dermatology,OR Suite E - Dermatology,2
+SR-102,P002,Dr. Sarah Taylor,Mohs Micrographic Surgery,Critical,2026-05-28,Pending,2,Dermatology,OR Suite E - Dermatology,3
+SR-103,P003,Dr. Linda Brown,Cyst Removal Surgery,Medium,2026-05-28,Pending,3,Dermatology,OR Suite E - Dermatology,2
+SR-104,P004,Dr. Alex Davis,Pediatric Appendectomy,Medium,2026-05-28,Pending,3,Pediatrics,OR Suite B - Pediatrics,2
+SR-105,P005,Dr. Sarah Smith,Congenital Hernia Repair,Medium,2026-05-20,Pending,3,Pediatrics,OR Suite B - Pediatrics,2
+SR-106,P006,Dr. Jane Davis,Tonsillectomy & Adenoidectomy,Routine,2026-05-22,Pending,3,Pediatrics,OR Suite B - Pediatrics,2
+SR-107,P007,Dr. Robert Davis,Tumor Resection Surgery,Routine,2026-05-22,Pending,1,Oncology,OR Suite C - Oncology,2
+SR-108,P008,Dr. Linda Wilson,Mastectomy,Routine,2026-05-22,Pending,1,Oncology,OR Suite C - Oncology,2
+SR-109,P009,Dr. Robert Davis,Colectomy for Colon Cancer,Routine,2026-06-01,Pending,1,Oncology,OR Suite C - Oncology,2
+SR-110,P010,Dr. Linda Wilson,Sarcoma Removal,Critical,2026-06-01,Pending,3,Oncology,OR Suite C - Oncology,3

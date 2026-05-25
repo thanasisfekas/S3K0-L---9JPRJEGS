@@ -1,6 +1,0 @@
-medicine_id,name,category,stock_level,expiry_date,price
-M001,Amoxicillin,Antibiotic,449,2027-05-12,12.5
-M002,Insulin Glargine,Hormone,116,2026-11-20,45.0
-M003,Atorvastatin,Statins,800,2028-01-15,8.75
-M004,Epinephrine,Adrenergic,21,2026-08-30,95.0
-M005,Paracetamol,Analgesic,2000,2029-03-10,2.1

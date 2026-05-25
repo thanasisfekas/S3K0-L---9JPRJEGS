@@ -6,6 +6,7 @@ from tkinter import ttk
 from tkinter import messagebox
 from Surgery_Appoint.Screens.surgery_request_screen import SurgeryRequestScreen
 from surgery_search_controller import SurgerySearchController
+from data_paths import data_path
 
 
 class SurgeryRequestController:
@@ -14,9 +15,7 @@ class SurgeryRequestController:
         self.on_back_click = on_back_click
         self.search_controller = search_controller
 
-        # Path references centralized matching your archive project structure
-        parent_dir = Path.cwd().parent.parent
-        self.csv_path = os.path.join(parent_dir, "archive (1)", "surgery_requests.csv")
+        self.csv_path = data_path("surgery_requests.csv")
 
     def get_surgery_requests(self):
         """ Safely reads surgical data rows from your final_billing layout reference files """

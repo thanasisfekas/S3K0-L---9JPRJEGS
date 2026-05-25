@@ -1,6 +1,7 @@
 from .file_reader import File_reader
 import pandas as pd
 import csv
+from data_paths import data_path
 
 class DocReader(File_reader):
     def __init__(self, file: str)->None:
@@ -440,9 +441,9 @@ class ShiftReader(File_reader):
 
 class HospitalStaffReader:
     def __init__(self):
-        self.DocReader = DocReader("doctors.csv")
-        self.NurseReader = NurseReader("nurses.csv")
-        self.ShiftReader = ShiftReader("scheduledShifts.csv")
+        self.DocReader = DocReader(data_path("doctors.csv"))
+        self.NurseReader = NurseReader(data_path("nurses.csv"))
+        self.ShiftReader = ShiftReader(data_path("scheduledShifts.csv"))
 
     def find_by_name_surname(self, name, surname):
         name = name.lower()

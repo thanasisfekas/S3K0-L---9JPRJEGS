@@ -6,6 +6,7 @@ from messageScreens import PrescriptionSearchFailureScreen, DrugShortageScreen, 
 
 import tkinter as tk
 from tkinter import messagebox
+from data_paths import data_path
 
 class PrescriptionController:
     def __init__(self, root, main_app, id):  
@@ -22,7 +23,7 @@ class PrescriptionController:
         self.searchPrescriptions()
 
     def searchPrescriptions(self):
-        p = PrescriptionsReader("prescriptions.csv")
+        p = PrescriptionsReader(data_path("uc8_prescriptions.csv"))
         raw_prescriptions = p.findPrescriptions(self.id)
 
         if raw_prescriptions: 
@@ -58,7 +59,7 @@ class PrescriptionController:
             self.returnToSearchScreen()  
 
     def mapMedicine(self):
-        m = MedReader("medicines.csv")
+        m = MedReader(data_path("uc8_medicines.csv"))
     
         for prescription in self.prescriptions:
             for med_item in prescription.get('medicines', []):
@@ -75,7 +76,7 @@ class PrescriptionController:
         for prescription in self.prescriptions:
             doc_id = prescription.get('doctor_id')
             if doc_id:
-                d = DocReader("doctors.csv")
+                d = DocReader(data_path("uc8_doctors.csv"))
                 d_name = d.findDoc(doc_id)
                 prescription['doctor_id'] = d_name
 
@@ -121,7 +122,7 @@ class PrescriptionController:
         return next((p for p in self.prescriptions if p.get('prescription_id') == self.selected_prescription_id), None)
 
     def get_current_stock(self, med_id):
-        inv = InvMedReader("medicines.csv")
+        inv = InvMedReader(data_path("uc8_medicines.csv"))
         return inv.searchQuantity(med_id), inv
 
     def check_stock_sufficient(self, current_stock, quantity_requested):

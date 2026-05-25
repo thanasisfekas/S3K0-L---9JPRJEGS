@@ -6,6 +6,7 @@ from datetime import datetime
 import tkinter as tk
 from tkinter import messagebox
 import time
+from data_paths import data_path
 
 class ShiftFormController:
     def __init__(self, root, input_data, main_app):
@@ -62,7 +63,7 @@ class ShiftFormController:
             return
 
         if self.checkAvailability():
-            create_shift = ShiftReader("scheduledShifts.csv")
+            create_shift = ShiftReader(data_path("uc7_scheduledShifts.csv"))
             create_shift.save_shift(self.id, self.name, self.surname, self.date, self.time_begin, self.time_end)
             SuccessRegistrationShiftScreen()            
             time.sleep(1)
