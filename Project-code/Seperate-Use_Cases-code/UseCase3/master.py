@@ -3,7 +3,7 @@ import sys
 import os
  
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from uc_3.controllers import InvMgMainMenuController
+from UseCase3.controllers import InvMgMainMenuController
 
 if __name__=="__main__":
     app = ctk.CTk()

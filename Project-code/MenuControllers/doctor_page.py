@@ -11,13 +11,13 @@ if str(USE_CASES_DIR) not in sys.path:
     sys.path.append(str(USE_CASES_DIR))
 
 from MenuControllers.centralMenu import CentralMenu
-import uc5.patient_record_pages as patient_record_pages
-import uc6.prescription_pages as prescription_pages
-from uc5.medical_record_repository import PatientRecordRepository
-from uc5.patient_record_controller import PatientRecordController
-from uc6.prescription_controller import PrescriptionController
-from uc6.prescription_repository import PrescriptionRepository
-from uc_4.controllers import DoctorMainMenuController
+import UseCase5.patient_record_pages as patient_record_pages
+import UseCase6.prescription_pages as prescription_pages
+from UseCase5.medical_record_repository import PatientRecordRepository
+from UseCase5.patient_record_controller import PatientRecordController
+from UseCase6.prescription_controller import PrescriptionController
+from UseCase6.prescription_repository import PrescriptionRepository
+from UseCase4.controllers import DoctorMainMenuController
 
 BG_COLOR = "#F8F9FA"
 CARD_WHITE = "#FFFFFF"

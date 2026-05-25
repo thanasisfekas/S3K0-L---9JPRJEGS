@@ -7,7 +7,7 @@ from pathlib import Path
 from tkinter import messagebox
 from MenuControllers.centralMenu import CentralMenu
 
-UC8_DIR = Path(__file__).resolve().parents[1] / "Seperate-Use_Cases-code" / "uc8"
+UC8_DIR = Path(__file__).resolve().parents[1] / "Seperate-Use_Cases-code" / "UseCase8"
 if str(UC8_DIR) not in sys.path:
     sys.path.insert(0, str(UC8_DIR))
 

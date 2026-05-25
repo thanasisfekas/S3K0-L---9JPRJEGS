@@ -12,7 +12,7 @@ USE_CASES_DIR = Path(__file__).resolve().parents[1] / "Seperate-Use_Cases-code"
 if str(USE_CASES_DIR) not in sys.path:
     sys.path.append(str(USE_CASES_DIR))
 
-from uc_3.controllers import InvMgMainMenuController
+from UseCase3.controllers import InvMgMainMenuController
 
 BG_COLOR = "#F8F9FA"
 CARD_WHITE = "#FFFFFF"

@@ -5,10 +5,10 @@ from datetime import datetime
 import re
 from tkinter import messagebox
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-from uc_4.screens import PatientAdmissionReqScreen,PatientSearchScreen,TransferPatientScreen,PatientRegScreen,AcceptScreen,PatientInfoScreen
+from UseCase4.screens import PatientAdmissionReqScreen,PatientSearchScreen,TransferPatientScreen,PatientRegScreen,AcceptScreen,PatientInfoScreen
 
 from MenuControllers.Reader.readerHandlers import WardReader,LabTestRequestReader,PatientFolderReader,DocReader,PatientAdmissionReader
-from uc_4.models import PatientHandler
+from UseCase4.models import PatientHandler
 from data_paths import data_path
 
 class PatientAdmissReqController:

@@ -4,8 +4,8 @@ import pandas as pd
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 from MenuControllers.Reader.readerHandlers import MedReader,EquipReader
-from uc_3.models import Inventory,OrderLog,Order
-from uc_3.screens import InvSearchScreen,SearchResultScreen,MessageScreen,OrderScreen,OrderConfirmationScreen,SuccessScreen
+from UseCase3.models import Inventory,OrderLog,Order
+from UseCase3.screens import InvSearchScreen,SearchResultScreen,MessageScreen,OrderScreen,OrderConfirmationScreen,SuccessScreen
 from data_paths import data_path
 
 class InvMgMainMenuController:
