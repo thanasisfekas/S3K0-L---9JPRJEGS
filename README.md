@@ -1,4 +1,4 @@
-# S3K0-L---9JPRJEGS
+# Vitalink
 <p align="center">
   <img src="app_icon.png" width=250/>
 </p>
