@@ -1,4 +1,4 @@
-# vitalink
+# Vitalink
 <p align="center">
   <img src="app_icon.png" width=250/>
 </p>
