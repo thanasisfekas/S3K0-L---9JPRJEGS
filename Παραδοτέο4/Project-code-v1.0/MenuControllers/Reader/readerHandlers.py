@@ -611,26 +611,49 @@ class PrescriptionsReader(File_reader):
         }
 
 
-class InvMedReader(MedReader):
+class InvMedReader(File_reader):
+    def __init__(self, file: str):
+        super().__init__(file)
+
+    def getMedId(self) -> pd.Series:
+        return self.data.iloc[:, 0]
+
+    def getMedName(self) -> pd.Series:
+        return self.data.iloc[:, 1]
+
+    def getMedCategory(self) -> pd.Series:
+        return self.data.iloc[:, 2]
+
+    def getMedStock(self) -> pd.Series:
+        return self.data.iloc[:, 3]
+
+    def getMedExpires(self) -> pd.Series:
+        return self.data.iloc[:, 4]
+
+    def getMedPrice(self) -> pd.Series:
+        return self.data.iloc[:, 5]
+
     def searchQuantity(self, med_id):
         med_id = str(med_id).strip()
-        df = self.data
-
-        mask = df.iloc[:, 0].astype(str).str.strip() == med_id
+        df = self.data  
+        
+        mask = (df.iloc[:, 0].astype(str).str.strip() == med_id)
         result = df[mask]
-
+    
         if not result.empty:
             return int(result.iloc[0, 3])
-
+        
         return 0
 
     def updateInventory(self, med_id, new_quantity):
         med_id = str(med_id).strip()
-        mask = self.data.iloc[:, 0].astype(str).str.strip() == med_id
-
+        df = self.data  
+    
+        mask = (df.iloc[:, 0].astype(str).str.strip() == med_id)
+    
         if mask.any():
-            self.data.loc[mask, self.data.columns[3]] = new_quantity
-            self.data.to_csv(self.file, index=False)
+            df.iloc[mask, 3] = new_quantity
+            df.to_csv(self.file, index=False) 
 
 class EquipReader(File_reader):
         def __init__(self, file:str):
